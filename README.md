@@ -53,4 +53,4 @@ Contact=(Ex.: http://YourCompanyWebsiteURL/Contact.html) //Contact form
 
 ## Contributing
 
-We appreciate all contributions to improve OurSpeakHome.
+We appreciate all contributions to improve EXInstaller.
