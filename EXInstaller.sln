@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EX Installer", "EXInstaller\EX Installer.vbproj", "{B5950F14-1BB6-4B65-89EC-493798F203F8}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EX Installer IDE", "EX Installer IDE\EX Installer IDE.vbproj", "{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5950F14-1BB6-4B65-89EC-493798F203F8}.Debug|x86.ActiveCfg = Debug|x86
+		{B5950F14-1BB6-4B65-89EC-493798F203F8}.Debug|x86.Build.0 = Debug|x86
+		{B5950F14-1BB6-4B65-89EC-493798F203F8}.Release|x86.ActiveCfg = Release|x86
+		{B5950F14-1BB6-4B65-89EC-493798F203F8}.Release|x86.Build.0 = Release|x86
+		{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}.Debug|x86.ActiveCfg = Debug|x86
+		{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}.Debug|x86.Build.0 = Debug|x86
+		{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}.Release|x86.ActiveCfg = Release|x86
+		{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
