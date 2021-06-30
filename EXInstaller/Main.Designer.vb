@@ -22,18 +22,21 @@ Partial Class Main
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.ProgressBarStatus = New System.Windows.Forms.ProgressBar()
         Me.lblTitle = New System.Windows.Forms.Label()
         Me.lblCurrentStatus = New System.Windows.Forms.Label()
         Me.lblStatus = New System.Windows.Forms.Label()
         Me.lblSubTitle = New System.Windows.Forms.Label()
         Me.lblStatusStatus = New System.Windows.Forms.Label()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ProgressBarStatus
         '
         Me.ProgressBarStatus.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ProgressBarStatus.Location = New System.Drawing.Point(12, 123)
         Me.ProgressBarStatus.Name = "ProgressBarStatus"
         Me.ProgressBarStatus.Size = New System.Drawing.Size(470, 23)
@@ -43,7 +46,7 @@ Partial Class Main
         'lblTitle
         '
         Me.lblTitle.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblTitle.Font = New System.Drawing.Font("Arial Rounded MT Bold", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblTitle.Location = New System.Drawing.Point(12, 9)
         Me.lblTitle.Name = "lblTitle"
@@ -64,7 +67,7 @@ Partial Class Main
         'lblStatus
         '
         Me.lblStatus.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblStatus.Location = New System.Drawing.Point(64, 107)
         Me.lblStatus.Name = "lblStatus"
         Me.lblStatus.Size = New System.Drawing.Size(418, 13)
@@ -74,8 +77,8 @@ Partial Class Main
         'lblSubTitle
         '
         Me.lblSubTitle.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblSubTitle.Location = New System.Drawing.Point(20, 35)
         Me.lblSubTitle.Name = "lblSubTitle"
         Me.lblSubTitle.Size = New System.Drawing.Size(454, 72)
@@ -90,11 +93,35 @@ Partial Class Main
         Me.lblStatusStatus.TabIndex = 5
         Me.lblStatusStatus.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'Button1
+        '
+        Me.Button1.Enabled = False
+        Me.Button1.Location = New System.Drawing.Point(135, 67)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(109, 27)
+        Me.Button1.TabIndex = 6
+        Me.Button1.Text = "Reinstalar"
+        Me.Button1.UseVisualStyleBackColor = True
+        Me.Button1.Visible = False
+        '
+        'Button2
+        '
+        Me.Button2.Enabled = False
+        Me.Button2.Location = New System.Drawing.Point(250, 67)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(109, 27)
+        Me.Button2.TabIndex = 7
+        Me.Button2.Text = "Desinstalar"
+        Me.Button2.UseVisualStyleBackColor = True
+        Me.Button2.Visible = False
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(494, 171)
+        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.lblStatusStatus)
         Me.Controls.Add(Me.lblSubTitle)
         Me.Controls.Add(Me.lblStatus)
@@ -102,10 +129,10 @@ Partial Class Main
         Me.Controls.Add(Me.lblTitle)
         Me.Controls.Add(Me.ProgressBarStatus)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "Main"
-        Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Instalador"
         Me.ResumeLayout(False)
@@ -118,5 +145,6 @@ Partial Class Main
     Friend WithEvents lblStatus As System.Windows.Forms.Label
     Friend WithEvents lblSubTitle As System.Windows.Forms.Label
     Friend WithEvents lblStatusStatus As System.Windows.Forms.Label
-
+    Friend WithEvents Button1 As Button
+    Friend WithEvents Button2 As Button
 End Class

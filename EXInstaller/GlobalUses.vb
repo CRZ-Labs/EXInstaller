@@ -1,4 +1,5 @@
-﻿Module GlobalUses
+﻿Imports Microsoft.Win32
+Module GlobalUses
 
 #Region "Debugger Vars"
 
@@ -9,6 +10,13 @@
     Public InstructiveFilePath As String = DIRCommons & "\Instructive.ini"
     Public StartParametros As String
     Public IsUninstall As Boolean = False
+    Public IsReinstall As Boolean = False
+    Public IsAssistant As Boolean = False
+    Public InstallerPathBuilder As String
+    Public RegistradorInstalacion As RegistryKey
+    Public CanSaveLog As Boolean = True 'True solo para el desarrollo. El log se guarda en DIRTemp. Recomendado dejar en False.
+    Public x32bits As String = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
+    Public x64x32bits As String = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
 
     Public ArquitecturaSO As String
     Public PackageSize As String
@@ -41,6 +49,7 @@
     Public Instructive_HelpLinks_ChangeLogLink As String
     Public Instructive_HelpLinks_UseGuide As String
     Public Instructive_HelpLinks_AppAbout As String
+    Public Instructive_HelpLinks_Contact As String
 #End Region
 
 #End Region
