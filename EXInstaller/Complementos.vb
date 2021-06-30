@@ -4,84 +4,87 @@ Imports Microsoft.Win32
 Imports System.IO
 Module Instalador
     Dim shObj As Object = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"))
-    Dim ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
 
 #Region "Installer"
-    Sub Install()
+    Sub Install() 'Instalamos el paquete descargado indicado por el instructivo
         Main.SetCurrentStatus("Comparando los datos del equipo...")
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
         Try
-            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
+            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe" 'Indicamos la ruta del ejecutable que se esta instalando
             Main.SetCurrentStatus("Creando los directorios para la instalacion...")
-            If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
-                My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            End If
-            If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = False Then
-                My.Computer.FileSystem.CreateDirectory(InstallerPathBuilder)
+            If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
+                If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
+                    My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                End If
+                If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = False Then
+                    My.Computer.FileSystem.CreateDirectory(InstallerPathBuilder)
+                End If
             End If
             'INSTALACION (COPIADO) DE FICHEROS EN ZIP A UBICACION FINAL DE INSTALACION ----------
-            IO.Directory.CreateDirectory(InstallerPathBuilder)
+            IO.Directory.CreateDirectory(InstallerPathBuilder) 'Creamos forzosamente el directorio de instalacion
             Main.SetCurrentStatus("Copiando los datos...")
             Dim output As Object = shObj.NameSpace((InstallerPathBuilder))
             Dim input As Object = shObj.NameSpace((DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"))
             output.CopyHere((input.Items), 4)
             Threading.Thread.Sleep(50)
-            'CREACION DEL ACCESO DIRECTO EN LA CARPETA DE PROGRAMAS DE WINDOWS ----------
-            Try
-                Main.SetCurrentStatus("Creando los datos post-instalacion...")
-                Dim StartUpWindowsFolder As String = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\" & Instructive_Package_Company & "\" & Instructive_Package_PackageName
-                If My.Computer.FileSystem.DirectoryExists(StartUpWindowsFolder) = False Then
-                    My.Computer.FileSystem.CreateDirectory(StartUpWindowsFolder)
-                End If
-                If My.Computer.FileSystem.FileExists(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk") = True Then
-                    My.Computer.FileSystem.DeleteFile(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk")
-                End If
-                Dim WSHShell As Object = CreateObject("WScript.Shell")
-                Dim Shortcut As Object
-                Shortcut = WSHShell.CreateShortcut(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk")
-                Shortcut.IconLocation = ExePackage & ",0"
-                Shortcut.TargetPath = ExePackage & ".exe"
-                Shortcut.WindowStyle = 1
-                Shortcut.Description = "Run " & Instructive_Package_PackageName
-                Shortcut.Save()
-            Catch ex As Exception
-                AddToLog("[Install(CreateShorcoutAndWindowsFolder)@Complementos]Error: ", ex.Message, True)
-            End Try
-            'CREACION DEL ACCESO DIRECTO EN EL ESCRITORIO ----------
-            Try
-                Dim DesktopShortcut As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\" & Instructive_Package_PackageName & ".lnk"
-                If My.Computer.FileSystem.FileExists(DesktopShortcut) = True Then
-                    My.Computer.FileSystem.DeleteFile(DesktopShortcut)
-                End If
-                Dim WSHShell As Object = CreateObject("WScript.Shell")
-                Dim Shortcut As Object = WSHShell.CreateShortcut(DesktopShortcut)
-                Shortcut.IconLocation = ExePackage & ",0"
-                Shortcut.TargetPath = ExePackage
-                'Shortcut.Arguments = "Debugger.DIRInstallFolder & "\" & Debugger.AssemblyName & ".exe""
-                Shortcut.WindowStyle = 1
-                Shortcut.Description = "Start " & Instructive_Package_PackageName
-                Shortcut.Save()
-            Catch ex As Exception
-                AddToLog("[Install(CreateShorcoutDesktop)@Complementos]Error: ", ex.Message, True)
-            End Try
-            'INJECION DEL INSTRUCTIVO AL ASISTENTE POST-INSTALACION ----------
-            Try
-                Dim stub As String
-                Const FS1 As String = "|EXI|"
-                Dim Temp As String = InstallerPathBuilder & "\uninstall.exe"
-                Dim bytesEXE As Byte() = System.IO.File.ReadAllBytes(Application.ExecutablePath)
-                File.WriteAllBytes(Temp, bytesEXE)
-                FileOpen(1, Temp, OpenMode.Binary, OpenAccess.Read, OpenShare.Default)
-                stub = Space(LOF(1))
-                FileGet(1, stub)
-                FileClose(1)
-                FileOpen(1, Temp, OpenMode.Binary, OpenAccess.ReadWrite, OpenShare.Default)
-                FilePut(1, stub & FS1 & Instructive_Package_AssemblyName & FS1 & Instructive_Package_AssemblyVersion & FS1 & InstructiveURL & FS1)
-                FileClose(1)
-            Catch ex As Exception
-                AddToLog("[CreateAndStubTheUninstaller@Complementos]Error: ", ex.Message, True)
-            End Try
+            If Instructive_Package_IsComponent = False Then 'Si es componente, no se crearan accesos directos ni nada, es solo un componente.
+                'CREACION DEL ACCESO DIRECTO EN LA CARPETA DE PROGRAMAS DE WINDOWS ----------
+                Try
+                    Main.SetCurrentStatus("Creando los datos post-instalacion...")
+                    Dim StartUpWindowsFolder As String = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\" & Instructive_Package_Company & "\" & Instructive_Package_PackageName
+                    If My.Computer.FileSystem.DirectoryExists(StartUpWindowsFolder) = False Then
+                        My.Computer.FileSystem.CreateDirectory(StartUpWindowsFolder)
+                    End If
+                    If My.Computer.FileSystem.FileExists(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk") = True Then
+                        My.Computer.FileSystem.DeleteFile(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk")
+                    End If
+                    Dim WSHShell As Object = CreateObject("WScript.Shell")
+                    Dim Shortcut As Object
+                    Shortcut = WSHShell.CreateShortcut(StartUpWindowsFolder & "\" & Instructive_Package_PackageName & ".lnk")
+                    Shortcut.IconLocation = ExePackage & ",0"
+                    Shortcut.TargetPath = ExePackage
+                    Shortcut.WindowStyle = 1
+                    Shortcut.Description = "Run " & Instructive_Package_PackageName
+                    Shortcut.Save()
+                Catch ex As Exception
+                    AddToLog("[Install(CreateShorcoutAndWindowsFolder)@Complementos]Error: ", ex.Message, True)
+                End Try
+                'CREACION DEL ACCESO DIRECTO EN EL ESCRITORIO ----------
+                Try
+                    Dim DesktopShortcut As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & "\" & Instructive_Package_PackageName & ".lnk"
+                    If My.Computer.FileSystem.FileExists(DesktopShortcut) = True Then
+                        My.Computer.FileSystem.DeleteFile(DesktopShortcut)
+                    End If
+                    Dim WSHShell As Object = CreateObject("WScript.Shell")
+                    Dim Shortcut As Object = WSHShell.CreateShortcut(DesktopShortcut)
+                    Shortcut.IconLocation = ExePackage & ",0"
+                    Shortcut.TargetPath = ExePackage
+                    'Shortcut.Arguments = "Debugger.DIRInstallFolder & "\" & Debugger.AssemblyName & ".exe""
+                    Shortcut.WindowStyle = 1
+                    Shortcut.Description = "Start " & Instructive_Package_PackageName
+                    Shortcut.Save()
+                Catch ex As Exception
+                    AddToLog("[Install(CreateShorcoutDesktop)@Complementos]Error: ", ex.Message, True)
+                End Try
+                'INJECION DEL INSTRUCTIVO AL ASISTENTE POST-INSTALACION ----------
+                Try
+                    Dim stub As String
+                    Const FS1 As String = "|EXI|"
+                    Dim Temp As String = InstallerPathBuilder & "\uninstall.exe"
+                    Dim bytesEXE As Byte() = System.IO.File.ReadAllBytes(Application.ExecutablePath)
+                    File.WriteAllBytes(Temp, bytesEXE)
+                    FileOpen(1, Temp, OpenMode.Binary, OpenAccess.Read, OpenShare.Default)
+                    stub = Space(LOF(1))
+                    FileGet(1, stub)
+                    FileClose(1)
+                    FileOpen(1, Temp, OpenMode.Binary, OpenAccess.ReadWrite, OpenShare.Default)
+                    FilePut(1, stub & FS1 & Instructive_Package_AssemblyName & FS1 & Instructive_Package_AssemblyVersion & FS1 & InstructiveURL & FS1)
+                    FileClose(1)
+                Catch ex As Exception
+                    AddToLog("[CreateAndStubTheUninstaller@Complementos]Error: ", ex.Message, True)
+                End Try
+            End If
             CreateRegistry()
         Catch ex As Exception
             AddToLog("[Install@Complementos]Error: ", ex.Message, True)
@@ -89,37 +92,37 @@ Module Instalador
     End Sub
     Sub CreateRegistry()
         Main.SetCurrentStatus("Registrando la instalacion...")
-        Try
-            'x86 (32bits) HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\
-            'Para equipos con x64Bits
-            '  32bits HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\
-            '  64bits HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\
-            RegistradorInstalacion.SetValue("InstallDate", DateTime.Now.ToString("dd/MM/yyyy"), RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("InstallLocation", InstallerPathBuilder, RegistryValueKind.ExpandString)
-            RegistradorInstalacion.SetValue("Size", FormatBytes(PackageSize), RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("Comments", Instructive_Package_PackageName & " Official Software by " & Instructive_Package_Company, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("DisplayIcon", ExePackage, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("DisplayName", Instructive_Package_AssemblyName, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("DisplayVersion", Instructive_Package_AssemblyVersion, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("HelpLink", Instructive_HelpLinks_UseGuide, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("Publisher", Instructive_Package_Company, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("Contact", Instructive_HelpLinks_Contact, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("Readme", Instructive_HelpLinks_AppAbout, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("URLInfoAbout", Instructive_HelpLinks_AppAbout, RegistryValueKind.String)
-            RegistradorInstalacion.SetValue("URLUpdateInfo", Instructive_HelpLinks_ChangeLogLink, RegistryValueKind.String)
+        If Instructive_Package_IsComponent = False Then 'Si es componente no se creara un desinstalador propio para el componente
             Try
-                Dim TotalSizeVal As String = Val(PackageSize)
-                RegistradorInstalacion.SetValue("EstimatedSize", TotalSizeVal.Remove(TotalSizeVal.Length - 3), RegistryValueKind.DWord)
-            Catch
+                'CREACION DEL REGISTRO DE INSTALACION ----------
+                RegistradorInstalacion.SetValue("InstallDate", DateTime.Now.ToString("dd/MM/yyyy"), RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("InstallLocation", InstallerPathBuilder, RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("Size", FormatBytes(PackageSize), RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Comments", Instructive_Package_PackageName & " Official Software by " & Instructive_Package_Company, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("DisplayIcon", ExePackage, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("DisplayName", Instructive_Package_AssemblyName, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("DisplayVersion", Instructive_Package_AssemblyVersion, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("HelpLink", Instructive_HelpLinks_UseGuide, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Publisher", Instructive_Package_Company, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Contact", Instructive_HelpLinks_Contact, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Readme", Instructive_HelpLinks_AppAbout, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("URLInfoAbout", Instructive_HelpLinks_AppAbout, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("URLUpdateInfo", Instructive_HelpLinks_ChangeLogLink, RegistryValueKind.String)
+                Try
+                    Dim TotalSizeVal As String = Val(PackageSize)
+                    RegistradorInstalacion.SetValue("EstimatedSize", TotalSizeVal.Remove(TotalSizeVal.Length - 3), RegistryValueKind.DWord)
+                Catch
+                End Try
+                RegistradorInstalacion.SetValue("ModifyPath", InstallerPathBuilder & "\uninstall.exe /Assistant", RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("UninstallPath", InstallerPathBuilder & "\uninstall.exe", RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("UninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """", RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("QuietUninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /S", RegistryValueKind.String)
+            Catch ex As Exception
+                AddToLog("[CreateInstallRegistry@Complementos]Error: ", ex.Message, True)
             End Try
-            RegistradorInstalacion.SetValue("ModifyPath", InstallerPathBuilder & "\uninstall.exe /Assistant", RegistryValueKind.ExpandString)
-            RegistradorInstalacion.SetValue("UninstallPath", InstallerPathBuilder & "\uninstall.exe", RegistryValueKind.ExpandString)
-            RegistradorInstalacion.SetValue("UninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """", RegistryValueKind.ExpandString)
-            RegistradorInstalacion.SetValue("QuietUninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /S", RegistryValueKind.String)
-        Catch ex As Exception
-            AddToLog("[CreateInstallRegistry@Complementos]Error: ", ex.Message, True)
-        End Try
+        End If
         Try
+            'VERIFICACION DE SI EL PROGRAMA NECESITA PERMISOS DE ADMINISTRADOR ----------
             If Instructive_Installer_NeedElevateAccess.StartsWith("True") Then
                 Dim REGISTRADOR As RegistryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", True)
                 REGISTRADOR.SetValue(ExePackage, "RUNASADMIN", RegistryValueKind.String)
@@ -128,6 +131,7 @@ Module Instalador
             AddToLog("[CreateNeedElevateAccessRegistry@Complementos]Error: ", ex.Message, True)
         End Try
         Try
+            'VERIFICACION DE SI EL PROGRAMA NECESITA INICIARSE CON WINDOWS ----------
             If Instructive_Installer_NeedStartUp.StartsWith("True") Then
                 If Instructive_Installer_NeedStartUp.Contains(";") Then
                     Dim Args() As String = Instructive_Installer_NeedStartUp.Split(";")
@@ -153,21 +157,29 @@ Module Instalador
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Normal)
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
         Main.SetCurrentStatus("Instalacion finalizada correctamente.")
-        MsgBox("Se ha instalado correctamente", MsgBoxStyle.Information, "Instalacion Completada")
+        Dim FinishedStatus As String = "Se ha instalado correctamente"
+        If IsUninstall = True Then
+            FinishedStatus = "Se ha desinstalado correctamente"
+        ElseIf IsReinstall = True Then
+            FinishedStatus = "Se ha reinstalado correctamente"
+        End If
+        MsgBox(FinishedStatus, MsgBoxStyle.Information, "EX Installer")
+        'VERIFICACION DE SI EL PROGRAMA NECESITA UN REINICIO DEL EQUIPO ----------
         If Instructive_Installer_NeedRestart = "True" Then
             If MessageBox.Show("El programa requiere un reinicio del equipo." & vbCrLf & "¿Quiere reiniciar ahora?", "Reinicio pendiente", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                 Process.Start("shutdown.exe", "/r")
             End If
         End If
-        End
+        Closing()
     End Sub
 #End Region
 
 #Region "Uninstaller"
+    'El Uninstaller hace todo lo contrario al Installer
     Sub Uninstall()
         'CONFIRMACION PARA LA DESINSTALACION ----------
         If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_PackageName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-            End
+            Closing()
             Exit Sub
         End If
         Try
@@ -245,9 +257,28 @@ Module Instalador
     Sub FinishUninstall()
         Main.SetCurrentStatus("Desinstalacion finalizada correctamente.")
         MsgBox("Se ha desinstalado correctamente", MsgBoxStyle.Information, "Desinstalacion Completada")
-        End
+        Closing()
     End Sub
+    'Problemas actuales
+    '   1) No se elimina la ruta de instalacion porque "Algo la esta usando".
+    '   2) El uninstaller.exe falla y no se xq y ademas algunas veces nos se elimina
+    '       OSEA: por asi decirlo, no lanza el asistente
+    '   3) el "asistente" al desinstalar tampoco elimina la ruta.
+    '   Posibles causas
+    '      1) Las variables estan mal ordenadas
+    '       2) Dios no tiene piedad
+    '       3) El modo asistente inicia dentro de la carpeta de instalacion y no hace el "puente"
+    '   Posible soluciones
+    '       morir
+    '       Cuando se inicie uninstall.exe AUTOMATICAMENTE se copiara a otra ubicacion fuera de la carpeta de instalacion para servir como asistente
+    '           segun yo, cuando se inicia uninstaller.exe no es hasta que el usuario hace algo -precionar uno de los dos botones- hasta que se copie
+    '           a  la ubicacion temporal.
+    '       rediseñar todo el inicio del programa, esto seria lo mejor, asi evito morir cada vez.
+
+    '30/06/2021 05:55 PM Chile
+    '
 #End Region
+
 End Module
 Module Complementos
 
@@ -269,6 +300,56 @@ Module Complementos
             End If
         Catch
         End Try
+    End Sub
+
+    Sub Closing()
+        AddToLog(vbCrLf & vbCrLf & "Informe antes de cerrar", "#Registro de variables" &
+                 vbCrLf & "DIRoot=" & DIRoot &
+                 vbCrLf & "DIRCommons=" & DIRCommons &
+                 vbCrLf & "DIRTemp=" & DIRTemp &
+                 vbCrLf & "InstructiveFilePath=" & InstructiveFilePath &
+                 vbCrLf & "StartParametros=" & StartParametros &
+                 vbCrLf & "IsUninstall=" & IsUninstall &
+                 vbCrLf & "IsReinstall=" & IsReinstall &
+                 vbCrLf & "IsAssistant=" & IsAssistant &
+                 vbCrLf & "InstallerPathBuilder=" & InstallerPathBuilder &
+                 vbCrLf & "RegistradorInstalacion=" & RegistradorInstalacion.Name &
+                 vbCrLf & "CanSaveLog=" & CanSaveLog &
+                 vbCrLf & "x32bits=" & x32bits &
+                 vbCrLf & "x64x32bits=" & x64x32bits &
+                 vbCrLf & "ExePackage=" & ExePackage &
+                 vbCrLf & "ArquitecturaSO=" & ArquitecturaSO &
+                 vbCrLf & "PackageSize=" & PackageSize &
+                 vbCrLf & "AssemblyName=" & AssemblyName &
+                 vbCrLf & "AssemblyVersion=" & AssemblyVersion &
+                 vbCrLf & "InstructiveURL=" & InstructiveURL &
+                 vbCrLf & "CanOverwrite=" & CanOverwrite &
+                 vbCrLf & "ExecutablePath=" & Application.ExecutablePath &
+                 vbCrLf &
+                 vbCrLf & "Instructive_Package_Status=" & Instructive_Package_Status &
+                 vbCrLf & "Instructive_Package_AssemblyName=" & Instructive_Package_AssemblyName &
+                 vbCrLf & "Instructive_Package_AssemblyVersion=" & Instructive_Package_AssemblyVersion &
+                 vbCrLf & "Instructive_Package_Company=" & Instructive_Package_Company &
+                 vbCrLf & "Instructive_Package_WebUrl=" & Instructive_Package_WebUrl &
+                 vbCrLf & "Instructive_Package_PackageName=" & Instructive_Package_PackageName &
+                 vbCrLf & "Instructive_Package_IsComponent=" & Instructive_Package_IsComponent &
+                 vbCrLf & "Instructive_Package_InstallerVersion=" & Instructive_Package_InstallerVersion &
+                 vbCrLf & "Instructive_Package_BitsArch=" & Instructive_Package_BitsArch &
+                 vbCrLf & "Instructive_Installer_Status=" & Instructive_Installer_Status &
+                 vbCrLf & "Instructive_Installer_EnableDowngrade=" & Instructive_Installer_EnableDowngrade &
+                 vbCrLf & "Instructive_Installer_NeedRestart=" & Instructive_Installer_NeedRestart &
+                 vbCrLf & "Instructive_Installer_NeedStartUp=" & Instructive_Installer_NeedStartUp &
+                 vbCrLf & "Instructive_Installer_NeedElevateAccess=" & Instructive_Installer_NeedElevateAccess &
+                 vbCrLf & "Instructive_Installer_InstallFolder=" & Instructive_Installer_InstallFolder &
+                 vbCrLf & "Instructive_Installer_EULA=" & Instructive_Installer_EULA &
+                 vbCrLf & "Instructive_Installer_Installer=" & Instructive_Installer_Installer &
+                 vbCrLf & "Instructive_Installer_InstallPackage=" & Instructive_Installer_InstallPackage &
+                 vbCrLf & "Instructive_HelpLinks_ChangeLogLink=" & Instructive_HelpLinks_ChangeLogLink &
+                 vbCrLf & "Instructive_HelpLinks_UseGuide=" & Instructive_HelpLinks_UseGuide &
+                 vbCrLf & "Instructive_HelpLinks_AppAbout=" & Instructive_HelpLinks_AppAbout &
+                 vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
+                 vbCrLf & "")
+        End
     End Sub
 
     Dim DoubleBytes As Double

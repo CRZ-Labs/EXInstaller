@@ -9,7 +9,7 @@ Public Class Main
     Private Sub Debugger_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SetCurrentStatus("Inicializando...")
         TaskbarProgress.SetState(Me.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
-        StartParametros = Command()
+        StartParametros = Command() 'Lee argumentos
         If My.Computer.FileSystem.DirectoryExists(DIRCommons) = False Then
             My.Computer.FileSystem.CreateDirectory(DIRCommons)
         End If
@@ -19,12 +19,12 @@ Public Class Main
         ReadParameters()
     End Sub
 
-    Sub ReadParameters()
+    Sub ReadParameters() 'Lee los argumentos y aplica
         SetCurrentStatus("Leyendo parametros...")
         Try
             Dim Argumento As String = StartParametros
-            If Argumento.Contains("-") Then
-                Argumento = Argumento.Remove(0, Argumento.LastIndexOf("-") + 1)
+            If Argumento.Contains("~") Then
+                Argumento = Argumento.Remove(0, Argumento.LastIndexOf("~") + 1)
             End If
             If StartParametros.Contains("/Uninstall") Then
                 IsUninstall = True
@@ -41,14 +41,18 @@ Public Class Main
                 StartParametros = StartParametros.Replace("/Assistant ", Nothing)
             End If
             If StartParametros = Nothing Then
-            ElseIf StartParametros.Contains("/Instructive-") Then
-                Dim Args As String() = Argumento.Split(",")
-                AssemblyName = Args(0).Trim()
-                AssemblyVersion = Args(1).Trim()
-                InstructiveURL = Args(2).Trim()
+            ElseIf StartParametros.Contains("/Instructive~") Then 'El argumento aplica un instructivo
+                If CanOverwrite = True Then
+                    Dim Args As String() = Argumento.Split(",")
+                    AssemblyName = Args(0).Trim()
+                    AssemblyVersion = Args(1).Trim()
+                    InstructiveURL = Args(2).Trim()
+                End If
             End If
-            If InstructiveURL = Nothing Then
-                LoadSTUB()
+            If CanOverwrite = True Then
+                If InstructiveURL = Nothing Then 'Si no hay argumentos, es posible que no haya una pre-configuracion, entonces se ve si hay algun instructivo injectado
+                    LoadSTUB()
+                End If
             End If
             If IsAssistant = False Then
                 If IsUninstall = True Then
@@ -63,7 +67,7 @@ Public Class Main
         Catch ex As Exception
             AddToLog("[ReadParameters@Debugger]Error: ", ex.Message, True)
             MsgBox("Error al leer los parametros", MsgBoxStyle.Critical, "Instalador")
-            End
+            Complementos.Closing()
         End Try
     End Sub
 
@@ -82,8 +86,8 @@ Public Class Main
             My.Computer.FileSystem.DeleteFile(DIRTemp & "\" & AssemblyName & "_Assistant.exe")
         End If
         My.Computer.FileSystem.CopyFile(Application.ExecutablePath, DIRTemp & "\" & AssemblyName & "_Assistant.exe")
-        Process.Start(DIRTemp & "\" & AssemblyName & "_Assistant.exe", parameter & " /Instructive-" & AssemblyName & "," & AssemblyVersion & "," & InstructiveURL)
-        End
+        Process.Start(DIRTemp & "\" & AssemblyName & "_Assistant.exe", parameter & " /Instructive~" & AssemblyName & "," & AssemblyVersion & "," & InstructiveURL)
+        Complementos.Closing()
     End Sub
 
     Sub AssistantMode()
@@ -113,6 +117,16 @@ Public Class Main
         InstallIt()
     End Sub
 
+    Sub IsComponent()
+        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+        lblTitle.Text = "Aplicando..."
+        lblSubTitle.Text = "Espere mientras el componente se aplica..."
+        lblStatus.Text = "Esperando..."
+        ProgressBarStatus.Style = ProgressBarStyle.Marquee
+        Text = "Aplicador"
+        'Si es un componente, muchas comprobaciones seran saltadas, ya que se descargara y sobreescribira lo indicado
+    End Sub
+
     Sub CommonStart()
         SetCurrentStatus("Consultando la informacion del equipo...")
         Try
@@ -135,7 +149,7 @@ Public Class Main
         AddToLog("Status: ", Status)
     End Sub
 
-    Sub GetInstructive()
+    Sub GetInstructive() 'Comenzamos el proceso de descarga del instructivo indicado
         Try
             SetCurrentStatus("Comenzo la descarga del instructivo...")
             Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
@@ -163,11 +177,11 @@ Public Class Main
         Catch ex As Exception
             AddToLog("[LoadSTUB@Debugger]Error: ", ex.Message, True)
             MsgBox("No hay ninguna pre-configuracion", MsgBoxStyle.Critical, "Instalador")
-            End
+            Complementos.Closing()
         End Try
     End Sub
 
-    Sub LoadInstructive()
+    Sub LoadInstructive() 'Leemos el instructivo descargado
         Try
             SetCurrentStatus("Leyendo el instructivo... 1/3")
             Instructive_Package_Status = GetIniValue("Package", "Status", InstructiveFilePath)
@@ -200,60 +214,87 @@ Public Class Main
         SetCurrentStatus("Esperando...")
         'DEFINICIONES PARA LA INSTALACION ----------
         Try
-            x32bits = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
-            x64x32bits = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
-            If ArquitecturaSO = "32" Then
-                InstallerPathBuilder = "C:\Program Files" & Instructive_Installer_InstallFolder
-                If RegistradorInstalacion Is Nothing Then
-                    Registry.LocalMachine.CreateSubKey(x32bits)
-                End If
-                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
-                If Instructive_Package_BitsArch = "64" Then
-                    MsgBox("El programa a instalar requiere de un procesador de 64bits y no de 32bits", MsgBoxStyle.Critical, "No se puede instalar")
-                    End
-                End If
-            ElseIf ArquitecturaSO = "64" Then
-                If Instructive_Package_BitsArch = "32" Then
-                    InstallerPathBuilder = "C:\Program Files (x86)" & Instructive_Installer_InstallFolder
-                    If RegistradorInstalacion Is Nothing Then
-                        Registry.LocalMachine.CreateSubKey(x32bits)
-                    End If
-                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
-                Else
-                    InstallerPathBuilder = "C:\Program Files" & Instructive_Installer_InstallFolder
-                    If RegistradorInstalacion Is Nothing Then
-                        Registry.LocalMachine.CreateSubKey(x64x32bits)
-                    End If
-                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x64x32bits, True)
-                End If
-            Else
-                InstallerPathBuilder = "C:\Program Files" & Instructive_Installer_InstallFolder
-                If RegistradorInstalacion Is Nothing Then
-                    Registry.LocalMachine.CreateSubKey(x32bits)
-                End If
-                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
-            End If
-            If IsUninstall = False Then
-                If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
-                    If RegistradorInstalacion IsNot Nothing Then
-                        If IsReinstall = True Then
-                            Reinstall()
-                        Else
-                            AssistantMode()
+            WhereDoIInstall()
+            If Instructive_Package_IsComponent = "False" Then 'Si es componente no se comprueba su previa existencia
+                If IsUninstall = False Then
+                    If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
+                        If RegistradorInstalacion IsNot Nothing Then
+                            If IsReinstall = True Then
+                                Reinstall()
+                            Else
+                                AssistantMode()
+                            End If
+                            Exit Sub
                         End If
-                        Exit Sub
                     End If
+                    InstallIt()
+                Else
+                    Uninstall()
                 End If
-                InstallIt()
             Else
-                Uninstall()
+                IsComponent()
+                InstallIt()
             End If
         Catch ex As Exception
             AddToLog("[LoadInstructive(1)@Debugger]Error: ", ex.Message, True)
         End Try
     End Sub
 
-    Sub InstallIt()
+    Sub WhereDoIInstall()
+        Try
+            x32bits = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
+            x64x32bits = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
+            Dim UbicacionFinal As String
+            Dim EsProgramFiles As Boolean = True
+            If Instructive_Installer_InstallFolder.Contains("%username%") Then
+                EsProgramFiles = False
+                Instructive_Installer_InstallFolder = Instructive_Installer_InstallFolder.Replace("%username%", Environment.UserName)
+            ElseIf Instructive_Installer_InstallFolder.Contains("%programfiles%") Then
+                EsProgramFiles = True
+                Instructive_Installer_InstallFolder = Instructive_Installer_InstallFolder.Replace("%programfiles%", Nothing)
+            End If
+            If ArquitecturaSO = "32" Then 'Si el PC es x32 (x86)
+                UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
+                If RegistradorInstalacion Is Nothing Then
+                    Registry.LocalMachine.CreateSubKey(x32bits)
+                End If
+                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
+                If Instructive_Package_BitsArch = "64" Then 'Si el PC es de x32 pero el programa es de x64
+                    MsgBox("El programa a instalar requiere de un procesador de 64bits y no de 32bits", MsgBoxStyle.Critical, "No se puede instalar")
+                    End
+                End If
+            ElseIf ArquitecturaSO = "64" Then 'Si el PC es x64
+                If Instructive_Package_BitsArch = "32" Then 'Si el PC es de x64 pero el programa es de x32
+                    UbicacionFinal = "C:\Program Files (x86)" & Instructive_Installer_InstallFolder
+                    If RegistradorInstalacion Is Nothing Then
+                        Registry.LocalMachine.CreateSubKey(x32bits)
+                    End If
+                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
+                Else 'Si el PC es de x64 y el programa tambien es de x64
+                    UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
+                    If RegistradorInstalacion Is Nothing Then
+                        Registry.LocalMachine.CreateSubKey(x64x32bits)
+                    End If
+                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x64x32bits, True)
+                End If
+            Else 'Si nada aplica, se instala donde dios quiera
+                UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
+                If RegistradorInstalacion Is Nothing Then
+                    Registry.LocalMachine.CreateSubKey(x32bits)
+                End If
+                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
+            End If
+            If EsProgramFiles = True Then
+                InstallerPathBuilder = UbicacionFinal
+            Else
+                InstallerPathBuilder = Instructive_Installer_InstallFolder
+            End If
+        Catch ex As Exception
+            AddToLog("[WhereDoIInstall@Debugger]Error: ", ex.Message, True)
+        End Try
+    End Sub
+
+    Sub InstallIt() 'Comenzamos el proceso de descarga del paquete indicado por el instructivo
         Try
             SetCurrentStatus("Descargando el paquete de instalacion...")
             ProgressBarStatus.Style = ProgressBarStyle.Blocks
@@ -262,7 +303,7 @@ Public Class Main
         Catch ex As Exception
             AddToLog("[InstallIt@Main]Error: ", ex.Message, True)
             MsgBox("No se pudo descargar el instructivo", MsgBoxStyle.Critical, "Instructivo")
-            End
+            Complementos.Closing()
         End Try
     End Sub
 
