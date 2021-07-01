@@ -12,6 +12,7 @@ Module GlobalUses
     '   %username% se reemplazara con Environment.UserName
     '   %programfiles% se reemplazara con la ubicacion de ProgramFiles respetando los bits
     Public StartParametros As String
+    Public IsInjected As Boolean = True
     Public IsUninstall As Boolean = False
     Public IsReinstall As Boolean = False
     Public IsAssistant As Boolean = False

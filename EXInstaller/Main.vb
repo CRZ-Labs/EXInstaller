@@ -22,59 +22,54 @@ Public Class Main
     Sub ReadParameters() 'Lee los argumentos y aplica
         SetCurrentStatus("Leyendo parametros...")
         Try
-            Dim Argumento As String = StartParametros
-            If Argumento.Contains("~") Then
-                Argumento = Argumento.Remove(0, Argumento.LastIndexOf("~") + 1)
-            End If
-            If StartParametros.Contains("/Uninstall") Then
-                IsUninstall = True
-                StartParametros = StartParametros.Replace("/Uninstall ", Nothing)
-            End If
-            If StartParametros.Contains("/Reinstall") Then
-                IsReinstall = True
-                StartParametros = StartParametros.Replace("/Reinstall ", Nothing)
-            End If
-            If StartParametros.Contains("/Assistant") Then
-                IsAssistant = True
-                IsUninstall = False
-                IsReinstall = False
-                StartParametros = StartParametros.Replace("/Assistant ", Nothing)
-            End If
-            If StartParametros = Nothing Then
-            ElseIf StartParametros.Contains("/Instructive~") Then 'El argumento aplica un instructivo
-                If CanOverwrite = True Then
-                    Dim Args As String() = Argumento.Split(",")
+            Dim parametro As String = Command()
+            Dim Argumentos() As String = Command().Split(" ")
+
+            For Each arg As String In Argumentos
+                If arg.Contains("/Uninstall") Then
+                    IsUninstall = True
+                    UninstallIt()
+                    parametro = parametro.Replace("/Uninstall", Nothing)
+                ElseIf arg.Contains("/Assistant") Then 'Fue iniciado por el "post-instalador"
+                    IsAssistant = True
+                    AssistantMode()
+                    parametro = parametro.Replace("/Assistant", Nothing)
+                ElseIf arg.Contains("/Instructive~") Then
+                    parametro = parametro.Replace("/Instructive~", Nothing)
+                    Dim Args As String() = parametro.Split(",")
                     AssemblyName = Args(0).Trim()
                     AssemblyVersion = Args(1).Trim()
                     InstructiveURL = Args(2).Trim()
+                    IsInjected = False
                 End If
+            Next
+
+            If IsInjected = True Then
+                LoadSTUB()
             End If
-            If CanOverwrite = True Then
-                If InstructiveURL = Nothing Then 'Si no hay argumentos, es posible que no haya una pre-configuracion, entonces se ve si hay algun instructivo injectado
-                    LoadSTUB()
-                End If
-            End If
-            If IsAssistant = False Then
+
+            If Application.ExecutablePath.Contains("uninstall.exe") Then
                 If IsUninstall = True Then
-                    UninstallMode(False)
+                    Restart("/Uninstall")
                 Else
-                    If Application.ExecutablePath.Contains("uninstall.exe") Then
-                        UninstallMode(True)
-                    End If
+                    Restart(Nothing)
                 End If
             End If
+
+            If InstructiveURL = Nothing Then
+                MsgBox("No se encontro una pre-configuracion", MsgBoxStyle.Critical, "Instructivo")
+                Complementos.Closing()
+            End If
+
             CommonStart()
         Catch ex As Exception
-            AddToLog("[ReadParameters@Debugger]Error: ", ex.Message, True)
+            AddToLog("[ReadParameters@Main]Error: ", ex.Message, True)
             MsgBox("Error al leer los parametros", MsgBoxStyle.Critical, "Instalador")
             Complementos.Closing()
         End Try
     End Sub
 
-    Sub UninstallMode(ByVal RestartIt As Boolean)
-        If RestartIt = True Then
-            Restart("/Uninstall")
-        End If
+    Sub UninstallIt()
         IsUninstall = True
         lblTitle.Text = "Desinstalando..."
         lblSubTitle.Text = "Espere mientras la desinstalación del programa se completa."
@@ -82,12 +77,17 @@ Public Class Main
     End Sub
 
     Sub Restart(ByVal parameter As String)
-        If My.Computer.FileSystem.FileExists(DIRTemp & "\" & AssemblyName & "_Assistant.exe") = True Then
-            My.Computer.FileSystem.DeleteFile(DIRTemp & "\" & AssemblyName & "_Assistant.exe")
-        End If
-        My.Computer.FileSystem.CopyFile(Application.ExecutablePath, DIRTemp & "\" & AssemblyName & "_Assistant.exe")
-        Process.Start(DIRTemp & "\" & AssemblyName & "_Assistant.exe", parameter & " /Instructive~" & AssemblyName & "," & AssemblyVersion & "," & InstructiveURL)
-        Complementos.Closing()
+        Try
+            If My.Computer.FileSystem.FileExists(DIRTemp & "\" & AssemblyName & "_Assistant.exe") = True Then
+                My.Computer.FileSystem.DeleteFile(DIRTemp & "\" & AssemblyName & "_Assistant.exe")
+            End If
+            My.Computer.FileSystem.CopyFile(Application.ExecutablePath, DIRTemp & "\" & AssemblyName & "_Assistant.exe")
+            Process.Start(DIRTemp & "\" & AssemblyName & "_Assistant.exe", parameter & " /Instructive~" & AssemblyName & "," & AssemblyVersion & "," & InstructiveURL)
+            End
+            'Complementos.Closing()
+        Catch ex As Exception
+            AddToLog("[Restart@Main]Error: ", ex.Message, True)
+        End Try
     End Sub
 
     Sub AssistantMode()
@@ -124,7 +124,6 @@ Public Class Main
         lblStatus.Text = "Esperando..."
         ProgressBarStatus.Style = ProgressBarStyle.Marquee
         Text = "Aplicador"
-        'Si es un componente, muchas comprobaciones seran saltadas, ya que se descargara y sobreescribira lo indicado
     End Sub
 
     Sub CommonStart()
@@ -135,12 +134,12 @@ Public Class Main
             For Each info As ManagementObject In objArquitectura.Get()
                 ArquitecturaSO = info.Properties("AddressWidth").Value.ToString()
             Next info
+            If My.Computer.FileSystem.FileExists(InstructiveFilePath) = True Then
+                My.Computer.FileSystem.DeleteFile(InstructiveFilePath)
+            End If
         Catch ex As Exception
-            AddToLog("[InformationQuery@Main]Error: ", ex.Message, True)
+            AddToLog("[CommonStart@Main]Error: ", ex.Message, True)
         End Try
-        If My.Computer.FileSystem.FileExists(InstructiveFilePath) = True Then
-            My.Computer.FileSystem.DeleteFile(InstructiveFilePath)
-        End If
         GetInstructive()
     End Sub
 
@@ -169,15 +168,11 @@ Public Class Main
             FileGet(1, stubb)
             FileClose(1)
             Dim opt() As String = Split(stubb, FileSplit)
-            If opt(1) IsNot "None" Then
-                AssemblyName = opt(1)
-                AssemblyVersion = opt(2)
-                InstructiveURL = opt(3)
-            End If
+            AssemblyName = opt(1)
+            AssemblyVersion = opt(2)
+            InstructiveURL = opt(3)
         Catch ex As Exception
             AddToLog("[LoadSTUB@Debugger]Error: ", ex.Message, True)
-            MsgBox("No hay ninguna pre-configuracion", MsgBoxStyle.Critical, "Instalador")
-            Complementos.Closing()
         End Try
     End Sub
 
@@ -217,20 +212,17 @@ Public Class Main
             WhereDoIInstall()
             If Instructive_Package_IsComponent = "False" Then 'Si es componente no se comprueba su previa existencia
                 If IsUninstall = False Then
-                    If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
+                    If My.Computer.FileSystem.FileExists(ExePackage) = True Then
                         If RegistradorInstalacion IsNot Nothing Then
-                            If IsReinstall = True Then
-                                Reinstall()
-                            Else
-                                AssistantMode()
-                            End If
+                            AssistantMode()
                             Exit Sub
                         End If
                     End If
-                    InstallIt()
                 Else
                     Uninstall()
+                    Exit Sub
                 End If
+                InstallIt()
             Else
                 IsComponent()
                 InstallIt()
@@ -289,6 +281,7 @@ Public Class Main
             Else
                 InstallerPathBuilder = Instructive_Installer_InstallFolder
             End If
+            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe" 'Indicamos la ruta del ejecutable que se esta instalando
         Catch ex As Exception
             AddToLog("[WhereDoIInstall@Debugger]Error: ", ex.Message, True)
         End Try
@@ -337,9 +330,13 @@ Public Class Main
     End Sub
 
     Private Sub Desinstalar_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        UninstallMode(True)
+        UninstallIt()
+        Uninstall()
     End Sub
     Private Sub Reinstalar_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Restart("/Reinstall")
+        Reinstall()
     End Sub
 End Class
+'Problemas
+'   Por alguna razon cuando se llama al uninstall.exe desde la carpeta de instalacion y le das en Desinstalar, por alguna razon el programa se congela y no elimina por completo la ruta de instalacion
+'       es algo realmente extraño.

@@ -11,7 +11,6 @@ Module Instalador
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
         Try
-            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe" 'Indicamos la ruta del ejecutable que se esta instalando
             Main.SetCurrentStatus("Creando los directorios para la instalacion...")
             If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
                 If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
@@ -114,8 +113,8 @@ Module Instalador
                 Catch
                 End Try
                 RegistradorInstalacion.SetValue("ModifyPath", InstallerPathBuilder & "\uninstall.exe /Assistant", RegistryValueKind.ExpandString)
-                RegistradorInstalacion.SetValue("UninstallPath", InstallerPathBuilder & "\uninstall.exe", RegistryValueKind.ExpandString)
-                RegistradorInstalacion.SetValue("UninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """", RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("UninstallPath", InstallerPathBuilder & "\uninstall.exe /Uninstall", RegistryValueKind.ExpandString)
+                RegistradorInstalacion.SetValue("UninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /Uninstall", RegistryValueKind.ExpandString)
                 RegistradorInstalacion.SetValue("QuietUninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /S", RegistryValueKind.String)
             Catch ex As Exception
                 AddToLog("[CreateInstallRegistry@Complementos]Error: ", ex.Message, True)
@@ -185,10 +184,14 @@ Module Instalador
         Try
             ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
             'ELIMINACION DE LA UBICACION DE INSTALACION ----------
-            Main.SetCurrentStatus("Eliminando los directorios de instalacion...")
-            If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
-                My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            End If
+            Try
+                Main.SetCurrentStatus("Eliminando los directorios de instalacion...")
+                If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
+                    My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                End If
+            Catch ex As Exception
+                AddToLog("[Uninstall(DeleteInstallationFolder)@Complementos]Error: ", ex.Message, True)
+            End Try
             Main.SetCurrentStatus("Eliminando los datos post-instalacion...")
             'ELIMINACION DEL ACCESO DIRECTO DE LA CARPETA PROGRAMAS DE WINDOWS ----------
             Try
@@ -218,7 +221,6 @@ Module Instalador
             Dim regKey As RegistryKey
             If ArquitecturaSO = "32" Then
                 regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
-                Registry.LocalMachine.DeleteSubKeyTree(x32bits)
             ElseIf ArquitecturaSO = "64" Then
                 If Instructive_Package_BitsArch = "32" Then
                     regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
@@ -288,11 +290,11 @@ Module Complementos
             If My.Computer.FileSystem.FileExists(DIRTemp & "\Install.log") = True Then
                 Overwrite = True
             End If
-            Dim LogContent As String
+            Dim LogContent As String = "(" & DateTime.Now.ToString("hh:mm:ss tt dd/MM/yyyy") & ")"
             If flag = True Then
-                LogContent = "[!!!] " & Header & content
+                LogContent &= "[!!!] " & Header & content
             Else
-                LogContent = Header & content
+                LogContent &= Header & content
             End If
             Console.WriteLine(LogContent)
             If CanSaveLog = True Then
@@ -303,7 +305,7 @@ Module Complementos
     End Sub
 
     Sub Closing()
-        AddToLog(vbCrLf & vbCrLf & "Informe antes de cerrar", "#Registro de variables" &
+        AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & "#Registro de variables" &
                  vbCrLf & "DIRoot=" & DIRoot &
                  vbCrLf & "DIRCommons=" & DIRCommons &
                  vbCrLf & "DIRTemp=" & DIRTemp &
