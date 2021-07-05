@@ -20,6 +20,7 @@ Public Class Main
             FileOpen(1, Temp, OpenMode.Binary, OpenAccess.ReadWrite, OpenShare.Default)
             FilePut(1, stub & FS1 & TextBox1.Text & FS1 & textBox2.Text & FS1 & textBox3.Text & FS1)
             FileClose(1)
+            MsgBox("Injectado correctamente!" & vbCrLf & "Guardado en : " & Temp)
         Catch ex As Exception
             MsgBox("Error al injectar el instructivo." & vbCrLf & ex.Message, MsgBoxStyle.Critical, "Instructive Injection")
             Console.WriteLine("[CreateAndStub@Main]Error: " & ex.Message)
@@ -28,8 +29,10 @@ Public Class Main
 
     Private Sub Injectar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         Dim OpenFile As New OpenFileDialog
-        OpenFile.Title = "Abrir EXE..."
+        OpenFile.Title = "Abrir EXInstaller..."
         OpenFile.Filter = "All file types (*.*)|*.*|Executable (*.exe)|*.exe"
+        OpenFile.InitialDirectory = Application.StartupPath
+        OpenFile.Multiselect = False
         If OpenFile.ShowDialog() = Windows.Forms.DialogResult.OK Then
             ExecutableFilePath = OpenFile.FileName
             StubTheThing()
