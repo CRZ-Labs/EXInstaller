@@ -8,9 +8,6 @@ Module GlobalUses
     Public DIRCommons As String = DIRoot & "\" & My.Application.Info.AssemblyName
     Public DIRTemp As String = DIRoot & "\Temp\" & My.Application.Info.AssemblyName
     Public InstructiveFilePath As String = DIRCommons & "\Instructive.ini"
-    'esto podria ser que si se quiere instalar en otra parte baste con poner "C:\Users\%username%\AppData\Local\CRZLabs\UniBot3"
-    '   %username% se reemplazara con Environment.UserName
-    '   %programfiles% se reemplazara con la ubicacion de ProgramFiles respetando los bits
     Public StartParametros As String
     Public IsInjected As Boolean = True
     Public IsUninstall As Boolean = False
@@ -18,10 +15,11 @@ Module GlobalUses
     Public IsAssistant As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
-    Public CanSaveLog As Boolean = True 'True solo para el desarrollo. El log se guarda en DIRTemp. Recomendado dejar en False.
+    Public CanSaveLog As Boolean = False 'True solo para el desarrollo. El log se guarda en DIRTemp. Recomendado dejar en False.
     Public x32bits As String
     Public x64x32bits As String
     Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
+    Public DownloadedZipPackage As String = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
 
     Public ArquitecturaSO As String
     Public PackageSize As String

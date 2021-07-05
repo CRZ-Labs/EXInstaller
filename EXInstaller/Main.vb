@@ -35,12 +35,14 @@ Public Class Main
                     AssistantMode()
                     parametro = parametro.Replace("/Assistant", Nothing)
                 ElseIf arg.Contains("/Instructive~") Then
-                    parametro = parametro.Replace("/Instructive~", Nothing)
-                    Dim Args As String() = parametro.Split(",")
-                    AssemblyName = Args(0).Trim()
-                    AssemblyVersion = Args(1).Trim()
-                    InstructiveURL = Args(2).Trim()
-                    IsInjected = False
+                    If CanOverwrite = True Then
+                        parametro = parametro.Replace("/Instructive~", Nothing)
+                        Dim Args As String() = parametro.Split(",")
+                        AssemblyName = Args(0).Trim()
+                        AssemblyVersion = Args(1).Trim()
+                        InstructiveURL = Args(2).Trim()
+                        IsInjected = False
+                    End If
                 End If
             Next
 
@@ -160,20 +162,22 @@ Public Class Main
     End Sub
 
     Sub LoadSTUB()
-        SetCurrentStatus("Leyendo datos pre-cargados...")
-        Try
-            FileOpen(1, Application.ExecutablePath, OpenMode.Binary, OpenAccess.Read)
-            Dim stubb As String = Space(LOF(1))
-            Dim FileSplit = "|EXI|"
-            FileGet(1, stubb)
-            FileClose(1)
-            Dim opt() As String = Split(stubb, FileSplit)
-            AssemblyName = opt(1)
-            AssemblyVersion = opt(2)
-            InstructiveURL = opt(3)
-        Catch ex As Exception
-            AddToLog("[LoadSTUB@Debugger]Error: ", ex.Message, True)
-        End Try
+        If CanOverwrite = True Then
+            SetCurrentStatus("Leyendo datos pre-cargados...")
+            Try
+                FileOpen(1, Application.ExecutablePath, OpenMode.Binary, OpenAccess.Read)
+                Dim stubb As String = Space(LOF(1))
+                Dim FileSplit = "|EXI|"
+                FileGet(1, stubb)
+                FileClose(1)
+                Dim opt() As String = Split(stubb, FileSplit)
+                AssemblyName = opt(1)
+                AssemblyVersion = opt(2)
+                InstructiveURL = opt(3)
+            Catch ex As Exception
+                AddToLog("[LoadSTUB@Debugger]Error: ", ex.Message, True)
+            End Try
+        End If
     End Sub
 
     Sub LoadInstructive() 'Leemos el instructivo descargado

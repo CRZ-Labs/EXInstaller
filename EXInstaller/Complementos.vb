@@ -10,6 +10,7 @@ Module Instalador
         Main.SetCurrentStatus("Comparando los datos del equipo...")
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
+        DownloadedZipPackage = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
         Try
             Main.SetCurrentStatus("Creando los directorios para la instalacion...")
             If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
@@ -23,8 +24,8 @@ Module Instalador
             'INSTALACION (COPIADO) DE FICHEROS EN ZIP A UBICACION FINAL DE INSTALACION ----------
             IO.Directory.CreateDirectory(InstallerPathBuilder) 'Creamos forzosamente el directorio de instalacion
             Main.SetCurrentStatus("Copiando los datos...")
-            Dim output As Object = shObj.NameSpace((InstallerPathBuilder))
-            Dim input As Object = shObj.NameSpace((DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"))
+            Dim output As Object = shObj.NameSpace(InstallerPathBuilder)
+            Dim input As Object = shObj.NameSpace(DownloadedZipPackage)
             output.CopyHere((input.Items), 4)
             Threading.Thread.Sleep(50)
             If Instructive_Package_IsComponent = False Then 'Si es componente, no se crearan accesos directos ni nada, es solo un componente.
@@ -287,7 +288,7 @@ Module Complementos
     Sub AddToLog(ByVal Header As String, ByVal content As String, Optional ByVal flag As Boolean = False)
         Try
             Dim Overwrite As Boolean = False
-            If My.Computer.FileSystem.FileExists(DIRTemp & "\Install.log") = True Then
+            If My.Computer.FileSystem.FileExists(DIRCommons & "\Install.log") = True Then
                 Overwrite = True
             End If
             Dim LogContent As String = "(" & DateTime.Now.ToString("hh:mm:ss tt dd/MM/yyyy") & ")"
@@ -298,13 +299,23 @@ Module Complementos
             End If
             Console.WriteLine(LogContent)
             If CanSaveLog = True Then
-                My.Computer.FileSystem.WriteAllText(DIRTemp & "\Install.log", LogContent & vbCrLf, Overwrite)
+                My.Computer.FileSystem.WriteAllText(DIRCommons & "\Install.log", LogContent & vbCrLf, Overwrite)
             End If
         Catch
         End Try
     End Sub
 
     Sub Closing()
+        Try
+            If My.Computer.FileSystem.DirectoryExists(DIRTemp) = True Then
+                My.Computer.FileSystem.DeleteDirectory(DIRTemp, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            End If
+            If My.Computer.FileSystem.FileExists(InstructiveFilePath) = True Then
+                My.Computer.FileSystem.DeleteFile(InstructiveFilePath)
+            End If
+        Catch ex As Exception
+            AddToLog("[Closing(DeletingTempFiles)@Complementos]Error: ", ex.Message, True)
+        End Try
         AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & "#Registro de variables" &
                  vbCrLf & "DIRoot=" & DIRoot &
                  vbCrLf & "DIRCommons=" & DIRCommons &
