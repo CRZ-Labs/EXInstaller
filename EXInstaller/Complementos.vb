@@ -2,18 +2,19 @@
 Imports System.Text
 Imports Microsoft.Win32
 Imports System.IO
+Imports System.IO.Compression
 Module Instalador
-    Dim shObj As Object = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"))
 
 #Region "Installer"
     Sub Install() 'Instalamos el paquete descargado indicado por el instructivo
+        shObj = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"))
         Main.SetCurrentStatus("Comparando los datos del equipo...")
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
         DownloadedZipPackage = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
         Try
             Main.SetCurrentStatus("Creando los directorios para la instalacion...")
-            If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
+            If Instructive_Package_IsComponent = "False" Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
                 If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
                     My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
                 End If
@@ -22,13 +23,16 @@ Module Instalador
                 End If
             End If
             'INSTALACION (COPIADO) DE FICHEROS EN ZIP A UBICACION FINAL DE INSTALACION ----------
-            IO.Directory.CreateDirectory(InstallerPathBuilder) 'Creamos forzosamente el directorio de instalacion
-            Main.SetCurrentStatus("Copiando los datos...")
-            Dim output As Object = shObj.NameSpace(InstallerPathBuilder)
-            Dim input As Object = shObj.NameSpace(DownloadedZipPackage)
-            output.CopyHere((input.Items), 4)
-            Threading.Thread.Sleep(50)
-            If Instructive_Package_IsComponent = False Then 'Si es componente, no se crearan accesos directos ni nada, es solo un componente.
+            Try
+                Main.SetCurrentStatus("Copiando los datos...")
+                IO.Directory.CreateDirectory(InstallerPathBuilder) 'Creamos forzosamente el directorio de instalacion
+                ZipFile.ExtractToDirectory(DownloadedZipPackage, InstallerPathBuilder)
+            Catch ex As Exception
+                AddToLog("[Install(CopyingData)@Complementos]Error: ", ex.Message, True)
+                MsgBox("Algo fallo al instalar el programa", MsgBoxStyle.Critical, "Instalación")
+                Complementos.Closing()
+            End Try
+            If Instructive_Package_IsComponent = "False" Then 'Si es componente, no se crearan accesos directos ni nada, es solo un componente.
                 'CREACION DEL ACCESO DIRECTO EN LA CARPETA DE PROGRAMAS DE WINDOWS ----------
                 Try
                     Main.SetCurrentStatus("Creando los datos post-instalacion...")
@@ -132,19 +136,19 @@ Module Instalador
         End Try
         Try
             'VERIFICACION DE SI EL PROGRAMA NECESITA INICIARSE CON WINDOWS ----------
+            Dim REGISTRADOR As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", True)
             If Instructive_Installer_NeedStartUp.StartsWith("True") Then
                 If Instructive_Installer_NeedStartUp.Contains(";") Then
+                    If REGISTRADOR Is Nothing Then
+                        Registry.LocalMachine.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")
+                    End If
                     Dim Args() As String = Instructive_Installer_NeedStartUp.Split(";")
-                    Dim REGISTRADOR As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", True)
-                    If REGISTRADOR Is Nothing Then
-                        Registry.LocalMachine.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")
+                    If Args(1) = "NULL" Then
+                        REGISTRADOR.SetValue(Instructive_Package_AssemblyName, """" & ExePackage & """", RegistryValueKind.ExpandString)
+                    Else
+                        REGISTRADOR.SetValue(Instructive_Package_AssemblyName, """" & ExePackage & """" & " " & Args(1), RegistryValueKind.ExpandString)
                     End If
-                    REGISTRADOR.SetValue(Instructive_Package_AssemblyName, """" & ExePackage & """" & " " & Args(1), RegistryValueKind.ExpandString)
                 Else
-                    Dim REGISTRADOR As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", True)
-                    If REGISTRADOR Is Nothing Then
-                        Registry.LocalMachine.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")
-                    End If
                     REGISTRADOR.SetValue(Instructive_Package_AssemblyName, ExePackage, RegistryValueKind.ExpandString)
                 End If
             End If
@@ -169,8 +173,24 @@ Module Instalador
             If MessageBox.Show("El programa requiere un reinicio del equipo." & vbCrLf & "¿Quiere reiniciar ahora?", "Reinicio pendiente", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                 Process.Start("shutdown.exe", "/r")
             End If
+        Else
+            Try
+                'VERIFICACION DE SI EL PROGRAMA NECESITA INICIARSE DESPUES DE LA INSTALACION ----------
+                If Instructive_Installer_NeedToStart.StartsWith("True") Then
+                    If Instructive_Installer_NeedToStart.Contains(";") Then
+                        Dim Args() As String = Instructive_Installer_NeedToStart.Split(";")
+                        If Args(1) = "NULL" Then
+                            Process.Start(ExePackage)
+                        Else
+                            Process.Start(ExePackage, Args(1))
+                        End If
+                    End If
+                End If
+            Catch ex As Exception
+                AddToLog("[CreateNeedStartupRegistry@Complementos]Error: ", ex.Message, True)
+            End Try
         End If
-        Closing()
+            Closing()
     End Sub
 #End Region
 
@@ -316,7 +336,7 @@ Module Complementos
         Catch ex As Exception
             AddToLog("[Closing(DeletingTempFiles)@Complementos]Error: ", ex.Message, True)
         End Try
-        AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & "#Registro de variables" &
+        AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & vbCrLf & "#Registro de variables" &
                  vbCrLf & "DIRoot=" & DIRoot &
                  vbCrLf & "DIRCommons=" & DIRCommons &
                  vbCrLf & "DIRTemp=" & DIRTemp &
@@ -361,7 +381,7 @@ Module Complementos
                  vbCrLf & "Instructive_HelpLinks_UseGuide=" & Instructive_HelpLinks_UseGuide &
                  vbCrLf & "Instructive_HelpLinks_AppAbout=" & Instructive_HelpLinks_AppAbout &
                  vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
-                 vbCrLf & "")
+                 vbCrLf & vbCrLf & vbCrLf)
         End
     End Sub
 

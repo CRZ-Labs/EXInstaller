@@ -34,6 +34,9 @@ Public Class Main
                     IsAssistant = True
                     AssistantMode()
                     parametro = parametro.Replace("/Assistant", Nothing)
+                ElseIf arg.Contains("-Log") Then
+                    CanSaveLog = True
+                    parametro = parametro.Replace("-Log", Nothing)
                 ElseIf arg.Contains("/Instructive~") Then
                     If CanOverwrite = True Then
                         parametro = parametro.Replace("/Instructive~", Nothing)
@@ -158,6 +161,7 @@ Public Class Main
             DownloadInstructive.DownloadFileAsync(DownloadInstructiveURI, InstructiveFilePath)
         Catch ex As Exception
             AddToLog("[GetInstructive@Main]Error: ", ex.Message, True)
+            Complementos.Closing()
         End Try
     End Sub
 
@@ -198,6 +202,7 @@ Public Class Main
             Instructive_Installer_NeedRestart = GetIniValue("Installer", "NeedRestart", InstructiveFilePath)
             Instructive_Installer_NeedStartUp = GetIniValue("Installer", "NeedStartUp", InstructiveFilePath)
             Instructive_Installer_NeedElevateAccess = GetIniValue("Installer", "NeedElevateAccess", InstructiveFilePath)
+            Instructive_Installer_NeedToStart = GetIniValue("Installer", "NeedToStart", InstructiveFilePath)
             Instructive_Installer_InstallFolder = GetIniValue("Installer", "InstallFolder", InstructiveFilePath)
             Instructive_Installer_EULA = GetIniValue("Installer", "EULA", InstructiveFilePath)
             Instructive_Installer_Installer = GetIniValue("Installer", "Installer", InstructiveFilePath)
@@ -209,6 +214,8 @@ Public Class Main
             Instructive_HelpLinks_Contact = GetIniValue("HelpLinks", "Contact", InstructiveFilePath)
         Catch ex As Exception
             AddToLog("[LoadInstructive(0)@Debugger]Error: ", ex.Message, True)
+            MsgBox("No se logro entender la informacion dentro del instructivo", MsgBoxStyle.Critical, "Instructivo")
+            Complementos.Closing()
         End Try
         SetCurrentStatus("Esperando...")
         'DEFINICIONES PARA LA INSTALACION ----------
