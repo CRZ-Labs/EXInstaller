@@ -13,6 +13,7 @@ Module GlobalUses
     Public IsUninstall As Boolean = False
     Public IsReinstall As Boolean = False
     Public IsAssistant As Boolean = False
+    Public IsSilence As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
     Public CanSaveLog As Boolean = False 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.

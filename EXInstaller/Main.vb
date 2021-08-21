@@ -30,6 +30,9 @@ Public Class Main
                     IsUninstall = True
                     UninstallIt()
                     parametro = parametro.Replace("/Uninstall", Nothing)
+                ElseIf arg.Contains("-S") Then 'Modo silencioso
+                    IsSilence = True
+                    parametro = parametro.Replace("-S", Nothing)
                 ElseIf arg.Contains("/Assistant") Then 'Fue iniciado por el "post-instalador"
                     IsAssistant = True
                     AssistantMode()
@@ -48,6 +51,15 @@ Public Class Main
                     End If
                 End If
             Next
+
+            If IsSilence = True Then
+                Me.Hide()
+                Me.FormBorderStyle = FormBorderStyle.FixedToolWindow
+                Me.WindowState = FormWindowState.Minimized
+                Me.Opacity = 0.0
+                Me.ShowInTaskbar = False
+                Me.ShowIcon = False
+            End If
 
             If IsInjected = True Then
                 LoadSTUB()
@@ -96,30 +108,38 @@ Public Class Main
     End Sub
 
     Sub AssistantMode()
-        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
-        lblTitle.Text = "Asistente"
-        lblSubTitle.Text = "Este programa ya esta instalado, seleccione una opcion."
-        lblStatus.Text = "Esperando..."
-        ProgressBarStatus.Style = ProgressBarStyle.Marquee
-        Text = "Asistente"
-        Button1.Enabled = True
-        Button2.Enabled = True
-        Button1.Visible = True
-        Button2.Visible = True
+        If IsSilence = False Then
+            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+            lblTitle.Text = "Asistente"
+            lblSubTitle.Text = "Este programa ya esta instalado, seleccione una opcion."
+            lblStatus.Text = "Esperando..."
+            ProgressBarStatus.Style = ProgressBarStyle.Marquee
+            Text = "Asistente"
+            Button1.Enabled = True
+            Button2.Enabled = True
+            Button1.Visible = True
+            Button2.Visible = True
+        Else
+            End
+        End If
     End Sub
 
     Sub Reinstall()
-        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
-        lblTitle.Text = "Reinstalando..."
-        lblSubTitle.Text = "Espere mientras el programa se reinstala..."
-        lblStatus.Text = "Esperando..."
-        ProgressBarStatus.Style = ProgressBarStyle.Marquee
-        Text = "Reinstalador"
-        Button1.Enabled = False
-        Button2.Enabled = False
-        Button1.Visible = False
-        Button2.Visible = False
-        InstallIt()
+        If IsSilence = False Then
+            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+            lblTitle.Text = "Reinstalando..."
+            lblSubTitle.Text = "Espere mientras el programa se reinstala..."
+            lblStatus.Text = "Esperando..."
+            ProgressBarStatus.Style = ProgressBarStyle.Marquee
+            Text = "Reinstalador"
+            Button1.Enabled = False
+            Button2.Enabled = False
+            Button1.Visible = False
+            Button2.Visible = False
+            InstallIt()
+        Else
+            InstallIt()
+        End If
     End Sub
 
     Sub IsComponent()

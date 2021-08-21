@@ -120,7 +120,7 @@ Module Instalador
                 RegistradorInstalacion.SetValue("ModifyPath", InstallerPathBuilder & "\uninstall.exe /Assistant", RegistryValueKind.ExpandString)
                 RegistradorInstalacion.SetValue("UninstallPath", InstallerPathBuilder & "\uninstall.exe /Uninstall", RegistryValueKind.ExpandString)
                 RegistradorInstalacion.SetValue("UninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /Uninstall", RegistryValueKind.ExpandString)
-                RegistradorInstalacion.SetValue("QuietUninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " /S", RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("QuietUninstallString", """" & InstallerPathBuilder & "\uninstall.exe" & """" & " -S", RegistryValueKind.String)
             Catch ex As Exception
                 AddToLog("[CreateInstallRegistry@Complementos]Error: ", ex.Message, True)
             End Try
@@ -167,7 +167,9 @@ Module Instalador
         ElseIf IsReinstall = True Then
             FinishedStatus = "Se ha reinstalado correctamente"
         End If
-        MsgBox(FinishedStatus, MsgBoxStyle.Information, "EX Installer")
+        If IsSilence = False Then
+            MsgBox(FinishedStatus, MsgBoxStyle.Information, "EX Installer")
+        End If
         'VERIFICACION DE SI EL PROGRAMA NECESITA UN REINICIO DEL EQUIPO ----------
         If Instructive_Installer_NeedRestart = "True" Then
             If MessageBox.Show("El programa requiere un reinicio del equipo." & vbCrLf & "¿Quiere reiniciar ahora?", "Reinicio pendiente", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
@@ -198,9 +200,11 @@ Module Instalador
     'El Uninstaller hace todo lo contrario al Installer
     Sub Uninstall()
         'CONFIRMACION PARA LA DESINSTALACION ----------
-        If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_PackageName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-            Closing()
-            Exit Sub
+        If IsSilence = False Then
+            If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_PackageName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
+                Closing()
+                Exit Sub
+            End If
         End If
         Try
             ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
@@ -279,7 +283,9 @@ Module Instalador
     End Sub
     Sub FinishUninstall()
         Main.SetCurrentStatus("Desinstalacion finalizada correctamente.")
-        MsgBox("Se ha desinstalado correctamente", MsgBoxStyle.Information, "Desinstalacion Completada")
+        If IsSilence = False Then
+            MsgBox("Se ha desinstalado correctamente", MsgBoxStyle.Information, "Desinstalacion Completada")
+        End If
         Closing()
     End Sub
     'Problemas actuales
