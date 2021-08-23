@@ -14,12 +14,13 @@ Module GlobalUses
     Public IsReinstall As Boolean = False
     Public IsAssistant As Boolean = False
     Public IsSilence As Boolean = False
+    Public IsForced As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
     Public CanSaveLog As Boolean = False 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.
     Public x32bits As String
     Public x64x32bits As String
-    Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
+    Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName
     Public DownloadedZipPackage As String = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
     Public shObj As Object
 
