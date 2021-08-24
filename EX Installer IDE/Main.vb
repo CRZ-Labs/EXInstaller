@@ -38,4 +38,9 @@ Public Class Main
             StubTheThing()
         End If
     End Sub
+
+    Private Sub Label4_Click(sender As Object, e As EventArgs) Handles Label4.Click
+        InstructiveCreator.Show()
+        InstructiveCreator.Focus()
+    End Sub
 End Class
