@@ -1,0 +1,308 @@
+<html>
+<head>
+	<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>EX Installer documentation</title>
+	<link type="text/css" rel="stylesheet" href="base.css">
+<body style="background:#4f4f4f;">
+<div align="center">
+<table width="770" height="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+<tr>
+<td valign="top">
+	<div class="chapter">
+			<div class="titlepage">
+				<div>
+					<div>
+						<h1><a name="Title"></a>EX Installer</h1>
+						Instalador simple y bonito.
+					</div>
+				</div>
+			</div>
+			<br /><br />
+			<div class="example">
+					<a name="Content"></a>
+					<p style="font-size:20px"><strong>Contenido</strong></p>
+			</div>
+			<ul type="square">
+				<li><a href="#Welcome">1) Bienvenida</a></li>
+				<li><a href="#About">2) Sobre el programa</a></li>
+				<li><a href="#Confiabilidad">3) Confiabilidad</a></li>
+				<li><a href="#Use">4) Como usarlo</a></li>
+				<li><a href="#Contact_Info">5) Contacto con soporte</a></li>
+			</ul>
+			<br />
+		<div class="section">
+			<!-- START INFORMATION -->
+				<div class="example">
+					<a name="Welcome"></a>
+					<p style="font-size:20px"><strong>1. Bienvenid@</strong></p>
+					<div class="example-contents">
+						<ul>
+							<p>
+								EX Installer fue creado por CRZ Labs, apunta a ser un instalador para cualquier persona que quiera distribuir su software.
+								<br />
+								La idea comienza con el siguiente problema: "Hice un programa, y quiero instalarlo en otras computadoras, pero ojala no ser dificil de construir.".
+								<br />
+								En internet hay muchos sistemas de deploy que requieren un conocimiento previo. EX Installer fue creado para que cualquier persona, siempre y cuando siguiendo las instrucciones de esta documentacion, pueda crear su propio sistema de deploy, facil, simple y bonito.
+							</p>
+						</ul>
+					</div>
+				</div>
+				<br class="example-break">
+				<br />
+				<!-- Next Info -->
+				<div class="example">
+					<a name="About"></a>
+					<p style="font-size:20px"><strong>2. Sobre el programa</strong></p>
+					<div class="example-contents">
+						<ul>
+							<p>
+								EX Installer cuenta con varias funciones que vienen en lo tipico de un sistema de deploy.
+								<ul>
+									<li>Instalacion: Al ejecutar un Instalador EX Installer pre-configurado, la instalacion es totalmente automatica, no necesita ninguna asistencia de parte del usuario.</li>
+									<li>Post-Instalacion: Cuando el programa pre-configurado esta instalado, al iniciar nuevamente un EX Installer pre-configurado, este vera si el programa esta instalado, si esta instalado, iniciara el modo Asistente, el cual tiene las funciones:</li>
+									<ul>
+										<li>Reinstalar: Al clicar en Reinstalar, EX Installer reinstalara el programa automaticamente. Reemplazando todo lo que se encuentre en la carpeta de instalacion.</li>
+										<li>Desinstalar: Al clicar en Desinstalar, EX Installer desinstalara el software pre-configurado de la maquina</li>
+									</ul>
+									<li>Inteligencia: EX Installer tiene algunas lineas de codigo robadas de <a href="http://worcomestudios.comule.com/WSS_Structure/AppHelper/AboutApps/WorInstaller.html" target=_blank"">WorInstaller</a> (un software de instalacion/deploy de <a href="http://worcomestudios.comule.com/" target="_blank">Worcome Studios</a>). Por lo que cuenta con algunas cosas obvias y avanzadas de un instalador.</li>
+								</ul>
+							</p>
+						</ul>	
+					</div>
+				</div>
+				<br class="example-break">
+				<br />
+				<!-- Next Info -->
+				<div class="example">
+					<a name="Confiabilidad"></a>
+					<p style="font-size:20px"><strong>3. Confiabilidad</strong></p>
+					<div class="example-contents">
+						<ul>
+							<p>
+								Dia a dia estamos viendo que mejorar, arreglar y agregar a EX Installer. Tu tambien puedes ayudar a crear la mejor version de EX Installer dirigiendote al <a href="https://github.com/CRZ-Labs/EXInstaller" target="_blank">Repositorio Oficial de EX Installer en GitHub</a>. Ayudanos!
+							</p>
+						</ul>
+					</div>
+				</div>
+				<br class="example-break">
+				<br />
+				<!-- Next Info -->
+				<div class="example">
+					<a name="Use"></a>
+					<p style="font-size:20px"><strong>4. Como usarlo</strong></p>
+					<div class="example-contents">
+						<ul>
+							<p>
+								<ul type="square">
+									EX Installer contiene dos binarios.<br />
+									<ul>
+										<li><strong>EXInstaller</strong>.exe: Ejecutable injectable con el instructivo del programa a instalar.</li>
+										<li><strong>EXInstallerIDE</strong>.exe: Ejecutable para injectar el instructivo en el ejecutable injectable.</li>
+										<li></li>
+									</ul>
+									<strong>Injectando:</strong>
+									<ul>
+										<li>I) Crear el archivo de servicio:</li>	
+										<ul>
+											El archivo de servicio es un archivo de texto plano con extencion .ini el cual contendra algunos valores para poder realizar la instalacion.
+											<br /><br />
+											Entre estos valores, se encuentran datos muy importantes, como la version de tu ensamblado, donde se instalara y algunos links de ayuda para el usuario.
+											<br />
+											Tambien se encuentran opciones, como por ejemplo, si tu programa necesita iniciarse como administrador o iniciarse con windows.
+											El archivo de servicio tiene un aspecto asi:
+											<pre>
+#EX Installer Instructive File
+[Package]
+Status=True
+AssemblyName=UniBot3
+AssemblyVersion=1.0.0.0
+Company=CRZ Labs
+WebUrl=http://crz-labs.rf.gd
+PackageName=UniBot3
+IsComponent=False
+InstallerVersion=0.1.0.0
+BitsArch=32
+[Installer]
+Status=True
+EnableDowngrade=True
+NeedRestart=False
+NeedStartUp=False
+NeedElevateAccess=False
+NeedToStart=True;NULL
+InstallFolder=C:\Users\%username%\AppData\Local\CRZ_Labs\UniBot3
+EULA=False;NULL
+Installer=NULL
+InstallPackage=https://www.dropbox.com/s/roz3sxi4m8wbaz7/UniBot3.zip?dl=1
+[HelpLinks]
+ChangeLogLink=http://crz-labs.rf.gd/UniBot3/index.html
+UseGuide=http://crz-labs.rf.gd/UniBot3/About.html
+AppAbout=http://crz-labs.rf.gd/UniBot3/About.html
+Contact=http://crz-labs.rf.gd/Contacto.html
+											</pre>
+											Este archivo de servicio es el utilizado por nuestro programa UniBot 3. Como puedes ver, EX Installer fue configurado para descargar e instalar UniBot 3.
+											<br /><br />
+											Comenzemos a deglosar estos campos.
+											<li>0) #EX Installer Instructive File: Este es un comentario, puedes modificarlo como quieras, pero, es obligatorio que este comentario este antes de todo.</li>
+											<li><strong>[Package]</strong>: Este campo indica el inicio de los campos para dicho titulo. No lo modifiques.</li>
+											<li><strong>Status</strong>=(True/False): Campo booleano, True o False. Sirve para ver si tu programa esta disponible para que los usuarios lo descargen e instalen.</li>
+											<ul>
+												<li>True: El instalador dejara que instalen o asistan este software.</li>
+												<li>False: El instalador no dejara que instalen o asistan este software.</li>
+											</ul>
+											<li><strong>AssemblyName</strong>=(nombre de tu ensamblado): Aqui debes indicar el nombre de ensamblado de tu programa.</li>
+											<ul>
+												<li>Si tu programa fue creado en C++. Debes poner el nombre de tu archivo. Ej.: TablasMultiplicar.exe, deberas ingresar TablasMultiplicar. Sin la extencion.</li>
+												<li>Si tu programa fue creado en otro lenguaje. deberas poner el nombre del ejecutable sin la extencion.</li>
+												<li>Debes saber que el instalador no es compatible con programas que no terminen en .EXE. Si tu programa es Python (.py), deberas convertirlo al formato .exe</li>
+												<li>Este campo sera usado para registrar el programa, crear accesos directos, etc.</li>
+											</ul>
+											<li><strong>AssemblyVersion</strong>=(version de tu programa): Indica la version del programa.</li>
+											<ul>
+												<li>Debes poner la version o compilado de tu programa.</li>
+												<li>Si es 1.0.0.0, o 1.49.294.192 o 17.07.20.21. Debera ser ingresado en este campo.</li>
+												<li>Si actualizas tu programa, este campo tambien deberar cambiarlo, pues en el futuro podriamos crear un sistema de actualizaciones</li>
+											</ul>
+											<li><strong>Company</strong>=(tu nombre o la de tu organizacion): Es el nombre del creador o entidad creadora del programa.</li>
+											<li><strong>WebUrl</strong>=(link a una pagina web propia o la de la organizcion): Indica la pagina web tuya (blog, portafolio, etc) o la de tu entidad.</li>
+											<li><strong>PackageName</strong>=(nombre del ejecutable principal): Aplica lo mismo que AssemblyName, solo que este sera usado para identificar el programa en si.</li>
+											<li><strong>IsComponent</strong>=(True/False): Campo booleano, True o False. Sirve para simplemente reemplazar un componte que utiliza tu programa.</li>
+											<ul>
+												<li>Es similar a una instalacion, solo que es un componente que no sera registrado, tampoco se crearan accesos directos.</li>
+												<li>Es perfecto para complementos .dll, imagenes o recursos en general.</li>
+											</ul>
+											<li><strong>InstallerVersion</strong>=(version del instalador): Si el instalador es nuevo o no. Realmente este campo basta con dejarlo en 1.0.0.0 o con la version actual de EX Installer.</li>
+											<li><strong>BitsArch</strong>=(32/64)Campo entero (solo permite 32 o 64): Indica para que aquitectura esta diseñado tu programa.</li>
+											<ul>
+												<li>OJO: Si el PC del usuario/cliente es de 32bits, y el programa es de 64bits. EX Installer NO instalara el programa.</li>
+												<li>EX Instaler esta construido para 32bits y es compatible con equipos de 64bits. El programa pre-configurado puede ser de 64bits.</li>
+												<li>EX Installer verificara la arquitectura del pc usuario/cliente.</li>
+											</ul>
+											<li><strong>[Installer]</strong>: Este campo indica el inicio de los campos para dicho titulo. No lo modifiques.</li>
+											<li><strong>Status</strong>=True(True/False): Campo booleano, True o False. Este campo no es usado por EX Installer.</li>
+											<li><strong>EnableDowngrade</strong>=True(True/False): Campo booleano, True o False. Este campo no es usado por EX Installer. Pero si se tiene planeado usarlo en el futuro. Indica si el instalador puede instalar una version inferior a la ya instalada.</li>
+											<li><strong>NeedRestart</strong>=(True/False): Campo booleano, True o False. Indica si el programa pide un reinicio del equipo.</li>
+											<li><strong>NeedStartUp</strong>=(True/False)(Opcional ;[parametro]): Campo booleano, True o False. Indica si el programa debe ejecutarse al iniciar Windows.</li>
+											<ul>
+												<li>Compatible con parametros. Si el programa necesita iniciarse con parametros al iniciar Windows. (Ej.: pon True;/background (Donde /background indica un parametro de tu ejecutable para iniciar en segundo plano))</li>
+												<li>Si no pones parametros, pero debe iniciar con Windows, pon True;NULL (Al iniciar Windows, el programa simplemente se iniciara sin parametros)</li>
+												<li>Si no necesitas que se inicie con Windows, pon False</li>
+											</ul>
+											<li><strong>NeedElevateAccess</strong>=(True/False): Campo booleano, True o False. Indica si el programa necesita ejecutarse siempre con permisos de Administrador.</li>
+											<li><strong>NeedToStart</strong>=(True/False)(Opcional ;[parametro]): Campo booleano, True o False. Indica si el programa se ejecutara automaticamente una vez finalizada la instalacion.</li>
+											<ul>
+												<li>Compatible con parametros. Si el programa necesita inicializarse una primera vez basta con poner: Ej.: True;/FirstStart (Donde /FirstStart indica un parametro de tu programa para inicializar el programa)</li>
+												<li>Si no pones parametros, pero necesita iniciarse, pon True;NULL (EX Installer iniciara el programa sin ponerle parametros)</li>
+												<li>Si no necesitas que se inicie pon False</li>
+											</ul>
+											<li><strong>InstallFolder</strong>=(directorio donde se instalara): Indica el directorio en donde tu programa recibira los archivos de instalacion.</li>
+											<ul>
+												<li>Si quieres que se instale en ProgramFiles y respetando la arquitectura 32 op 64 bits. Debes poner %programfiles%\Compañia\TuPrograma</li>
+												<li>Si quires que se instale en un directorio dentro del usuario especifico. Debes poner C:\Users\%username%\AppData\Local\Compañia\TuPrograma</li>
+												<li>Los campos %programfiles% y %username% seran automaticamente reemplazados por su equivalencia.</li>
+												<ul>
+													%programfiles% se reemplazara por, dependiendo de la arquitectura:
+													<ul>
+														<li>Si el computador es de 32 bits y el programa es de 32 bits.</li>
+														<ul>
+															"C:\Program Files"
+														</ul>
+														<li>Si el computador es de 32 bits y el programa es de 64 bits.</li>
+														<ul>
+															No se realizara la instalacion.
+														</ul>
+														<li>Si el computador es de 64 bits y el programa es de 32 bits.</li>
+														<ul>
+															"C:\Program Files (x86)"
+														</ul>
+														<li>Si el computador es de 64 bits y el programa es de 64 bits.</li>
+														<ul>
+															"C:\Program Files"
+														</ul>
+													</ul>
+													%username% se reemplazara por el nombre de usuario actual. (Environment.UserName en .NET)
+												</ul>
+											</ul>
+											<li><strong>EULA</strong>=(True/False)(Opcional ;[link eula]): Campo booleano, True o False. Indica el EULA del programa. No es utilizado por EX Installer.</li>
+											<ul>
+												<li>False para mostrar un EULA pre-cargado.</li>
+												<li>True para indicar uno que se encuentra siguiendo el link</li>
+												<ul>
+													<li>True;Link_del_eula_remoto</li>
+												</ul>
+											</ul>
+											<li><strong>Installer</strong>=NULL: Indica el link de descarga del instalador actual. El link de donde descarga el usuario/cliente el instalador que estas configurando. Si, es extraño. EX Installer no utiliza este campo.</li>
+											<li><strong>InstallPackage</strong>=(link de descarga del .zip con las cosas a instalar): Indica el link de descarga DIRECTO del .zip con los archivos a copiar e instalar en la carpeta "InstallFolder"</li>
+											<li><strong>[HelpLinks]</strong>: Este campo indica el inicio de los campos para dicho titulo. No lo modifiques.</li>
+											<li><strong>ChangeLogLink</strong>=(link a el documento de cambios): Indica el link a la pagina web donde estan publicados los cambios del programa a traves de las versiones. Conocido como "Notas de la version, WhatsNew"</li>
+											<li><strong>UseGuide</strong>=(link de ayuda de uso del programa): Indica el link para obtener ayuda de como usar el programa. Ejemplo: Este documento que estas leyendo.</li>
+											<li><strong>AppAbout</strong>=(link de informacion sobre el programa): Indica el link para obtener informacion del programa.</li>
+											<li><strong>Contact</strong>=(link para contactarte a ti o a tu organizcion): Indica el link para poder poner en contacto al usuario/cliente contigo o tu entidad.</li>
+										</ul>
+										II) Injectar al ejecutable
+										<ul>
+											Debes iniciar EXInstallerIDE.exe para poder injectar en el ejecutable EXInstaller.exe y crear el instalador.
+											<li>1) Al iniciar EXInstallerIDE.exe, se mostrara una ventana con tres (3) campos</li>
+											<ul>
+												<li>Ensamblado: Indica el AssemblyName indicado en el archivo de servicio.</li>
+												<li>Version: Indica el AssemblyVersion indicado en el archivo de servicio.</li>
+												<li>URL: Indica el link de descarga directo del archivo de servicio.</li>
+												<ul>
+													<li>Debes subir el archivo de servicio a algun servicio de almacenamiento en linea. Puede ser FTP, DropBox, OneDrive o, si estas loco, usar GoogleDrive.</li>
+													<li>Para hacer que un link sea de descarga directa:</li>
+													<ul>
+														<li>DropBox: <a href="https://help.dropbox.com/es-la/files-folders/share/force-download" target="_blank">ve este documento</a></li>
+														<li>OneDrive: <a href="http://metadataconsulting.blogspot.com/2014/05/how-to-get-direct-download-link-from.html" target="_blank">ve este documento</a></li>
+														<li>GoogleDrive: <a href="https://sites.google.com/site/gdocs2direct/home" target="_blank">ve este documento</a>. (jaja, no era tan dificil)</li>
+														Nota: Recomendamos usar este mismo metodo a la hora de rellenar "InstallPackage" en el archivo de servicio.
+													</ul>
+												</ul>
+											</ul>
+											<li>2) Clic en el boton Injectar, aparecera un dialogo en que te pedira selecciones el ejecutable EXInstaller.exe</li>
+											<li>3) Luego de ello, un mensaje deberia indicarte que la injecion fue correcta. Un nuevo ejecutable se creara en donde se encuentre EXInstallerIDE.exe con el nombre "{AssemblyName} Installer.exe"</li>
+											<li>4) Listo!. Ese es el ejecutable que puedes distribuir para que el usuario/cliente lo ejecute y asi instale tu programa.</li>
+										</ul>
+									</ul>
+							</p>
+						</ul>
+					</div>
+				</div>
+				<br class="example-break">
+				<br />
+				<!-- Next Info -->
+				<div class="example">
+					<a name="Contact_Info"></a>
+					<p style="font-size:20px"><strong>5. Contacto</strong></p>
+					<div class="example-contents">
+						<ul>
+							<p>
+								Si tienes preguntas, dudas, problemas, reclamos o lo que sea, contactanos!
+							</p>
+						</ul>
+					</div>
+				</div>
+				<br class="example-break">
+				<br /><br />
+				<!-- Next Info -->
+				<div style="font-size:15px"><strong>Sobre privacidad</strong>
+					<div style="font-size:13px">
+						<ul>
+							Ni EXInstaller, EXInstallerIDE ni el instalador que hayas creado recopilan o envia informacion.
+						</ul>
+					</div>
+				</div>
+		</div>
+	</div>
+		<div class="footnotes">
+			<br>
+			<hr align="left" width="100">
+			<div class="footnote">
+				<p>Ultima modificacion: 21/08/2021<br />
+				Este documento puede no contener informacion actualizada sobre las nuevas funciones y esta sujeto a cambios sin previo aviso.</p>
+				<br />
+			</div>
+		</div>
+	</div>
+	</td></tr></table>
+	</div>
+</body>
+</html>

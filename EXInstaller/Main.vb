@@ -20,20 +20,28 @@ Public Class Main
     End Sub
 
     Sub ReadParameters() 'Lee los argumentos y aplica
-        SetCurrentStatus("Leyendo parametros...")
+        SetCurrentStatus("Leyendo parámetros...")
         Try
             Dim parametro As String = Command()
             Dim Argumentos() As String = Command().Split(" ")
-
             For Each arg As String In Argumentos
                 If arg.Contains("/Uninstall") Then
                     IsUninstall = True
                     UninstallIt()
                     parametro = parametro.Replace("/Uninstall", Nothing)
+                ElseIf arg.Contains("-F") Then
+                    IsForced = True
+                    parametro = parametro.Replace("-F", Nothing)
+                ElseIf arg.Contains("-S") Then
+                    IsSilence = True
+                    parametro = parametro.Replace("-S", Nothing)
                 ElseIf arg.Contains("/Assistant") Then 'Fue iniciado por el "post-instalador"
                     IsAssistant = True
                     AssistantMode()
                     parametro = parametro.Replace("/Assistant", Nothing)
+                ElseIf arg.Contains("-Log") Then
+                    CanSaveLog = True
+                    parametro = parametro.Replace("-Log", Nothing)
                 ElseIf arg.Contains("/Instructive~") Then
                     If CanOverwrite = True Then
                         parametro = parametro.Replace("/Instructive~", Nothing)
@@ -45,6 +53,15 @@ Public Class Main
                     End If
                 End If
             Next
+
+            If IsSilence = True Then
+                Me.Hide()
+                Me.FormBorderStyle = FormBorderStyle.FixedToolWindow
+                Me.WindowState = FormWindowState.Minimized
+                Me.Opacity = 0.0
+                Me.ShowInTaskbar = False
+                Me.ShowIcon = False
+            End If
 
             If IsInjected = True Then
                 LoadSTUB()
@@ -58,15 +75,21 @@ Public Class Main
                 End If
             End If
 
+            If IsSilence = True Then
+                Me.Hide()
+                Me.FormBorderStyle = FormBorderStyle.FixedToolWindow
+                Me.ShowInTaskbar = False
+            End If
+
             If InstructiveURL = Nothing Then
-                MsgBox("No se encontro una pre-configuracion", MsgBoxStyle.Critical, "Instructivo")
+                MsgBox("No se encontró una preconfiguración", MsgBoxStyle.Critical, "Instructivo")
                 Complementos.Closing()
             End If
 
             CommonStart()
         Catch ex As Exception
             AddToLog("[ReadParameters@Main]Error: ", ex.Message, True)
-            MsgBox("Error al leer los parametros", MsgBoxStyle.Critical, "Instalador")
+            MsgBox("Error al leer los parámetros", MsgBoxStyle.Critical, "Instalador")
             Complementos.Closing()
         End Try
     End Sub
@@ -93,39 +116,69 @@ Public Class Main
     End Sub
 
     Sub AssistantMode()
-        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
-        lblTitle.Text = "Asistente"
-        lblSubTitle.Text = "Este programa ya esta instalado, seleccione una opcion."
-        lblStatus.Text = "Esperando..."
-        ProgressBarStatus.Style = ProgressBarStyle.Marquee
-        Text = "Asistente"
-        Button1.Enabled = True
-        Button2.Enabled = True
-        Button1.Visible = True
-        Button2.Visible = True
+        If IsSilence = False Then
+            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+            lblTitle.Text = "Asistente"
+            lblSubTitle.Text = "Este programa ya esta instalado, seleccione una opcion."
+            lblStatus.Text = "Esperando..."
+            ProgressBarStatus.Style = ProgressBarStyle.Marquee
+            Text = "Asistente"
+            Button1.Enabled = True
+            Button2.Enabled = True
+            Button1.Visible = True
+            Button2.Visible = True
+            'check updates
+            Try
+                Dim VersionReader As RegistryKey
+            VersionReader = RegistradorInstalacion
+                If VersionReader IsNot Nothing Then
+                    Dim version1 = New Version(VersionReader.GetValue("DisplayVersion"))
+                    Dim version2 = New Version(Instructive_Package_AssemblyVersion)
+                    Dim result = version1.CompareTo(version2)
+                    If (result > 0) Then
+                        'Sobre actualizado
+                    ElseIf (result < 0) Then
+                        'Nueva version
+                        Button1.Text = "Actualizar"
+                        IsUpdate = True
+                    End If
+                End If
+            Catch ex As Exception
+                AddToLog("[AssistantMode@Main]Error: ", ex.Message, True)
+            End Try
+        Else
+            End
+        End If
     End Sub
 
     Sub Reinstall()
-        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
-        lblTitle.Text = "Reinstalando..."
-        lblSubTitle.Text = "Espere mientras el programa se reinstala..."
-        lblStatus.Text = "Esperando..."
-        ProgressBarStatus.Style = ProgressBarStyle.Marquee
-        Text = "Reinstalador"
-        Button1.Enabled = False
-        Button2.Enabled = False
-        Button1.Visible = False
-        Button2.Visible = False
-        InstallIt()
+        If IsSilence = False Then
+            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+            lblTitle.Text = "Reinstalando..."
+            lblSubTitle.Text = "Espere mientras el programa se reinstala..."
+            lblStatus.Text = "Esperando..."
+            ProgressBarStatus.Style = ProgressBarStyle.Marquee
+            Text = "Reinstalador"
+            Button1.Enabled = False
+            Button2.Enabled = False
+            Button1.Visible = False
+            Button2.Visible = False
+            IsUpdate = True
+            InstallIt()
+        Else
+            InstallIt()
+        End If
     End Sub
 
     Sub IsComponent()
-        Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
-        lblTitle.Text = "Aplicando..."
-        lblSubTitle.Text = "Espere mientras el componente se aplica..."
-        lblStatus.Text = "Esperando..."
-        ProgressBarStatus.Style = ProgressBarStyle.Marquee
-        Text = "Aplicador"
+        If IsSilence = False Then
+            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
+            lblTitle.Text = "Aplicando..."
+            lblSubTitle.Text = "Espere mientras el componente se aplica..."
+            lblStatus.Text = "Esperando..."
+            ProgressBarStatus.Style = ProgressBarStyle.Marquee
+            Text = "Aplicador"
+        End If
     End Sub
 
     Sub CommonStart()
@@ -152,18 +205,19 @@ Public Class Main
 
     Sub GetInstructive() 'Comenzamos el proceso de descarga del instructivo indicado
         Try
-            SetCurrentStatus("Comenzo la descarga del instructivo...")
+            SetCurrentStatus("Comenzó la descarga del instructivo...")
             Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
             DownloadInstructiveURI = New Uri(InstructiveURL)
             DownloadInstructive.DownloadFileAsync(DownloadInstructiveURI, InstructiveFilePath)
         Catch ex As Exception
             AddToLog("[GetInstructive@Main]Error: ", ex.Message, True)
+            Complementos.Closing()
         End Try
     End Sub
 
     Sub LoadSTUB()
         If CanOverwrite = True Then
-            SetCurrentStatus("Leyendo datos pre-cargados...")
+            SetCurrentStatus("Leyendo datos precargados...")
             Try
                 FileOpen(1, Application.ExecutablePath, OpenMode.Binary, OpenAccess.Read)
                 Dim stubb As String = Space(LOF(1))
@@ -186,6 +240,7 @@ Public Class Main
             Instructive_Package_Status = GetIniValue("Package", "Status", InstructiveFilePath)
             Instructive_Package_AssemblyName = GetIniValue("Package", "AssemblyName", InstructiveFilePath)
             Instructive_Package_AssemblyVersion = GetIniValue("Package", "AssemblyVersion", InstructiveFilePath)
+            Instructive_Package_Description = GetIniValue("Package", "Description", InstructiveFilePath)
             Instructive_Package_Company = GetIniValue("Package", "Company", InstructiveFilePath)
             Instructive_Package_WebUrl = GetIniValue("Package", "WebUrl", InstructiveFilePath)
             Instructive_Package_PackageName = GetIniValue("Package", "PackageName", InstructiveFilePath)
@@ -198,6 +253,7 @@ Public Class Main
             Instructive_Installer_NeedRestart = GetIniValue("Installer", "NeedRestart", InstructiveFilePath)
             Instructive_Installer_NeedStartUp = GetIniValue("Installer", "NeedStartUp", InstructiveFilePath)
             Instructive_Installer_NeedElevateAccess = GetIniValue("Installer", "NeedElevateAccess", InstructiveFilePath)
+            Instructive_Installer_NeedToStart = GetIniValue("Installer", "NeedToStart", InstructiveFilePath)
             Instructive_Installer_InstallFolder = GetIniValue("Installer", "InstallFolder", InstructiveFilePath)
             Instructive_Installer_EULA = GetIniValue("Installer", "EULA", InstructiveFilePath)
             Instructive_Installer_Installer = GetIniValue("Installer", "Installer", InstructiveFilePath)
@@ -209,20 +265,22 @@ Public Class Main
             Instructive_HelpLinks_Contact = GetIniValue("HelpLinks", "Contact", InstructiveFilePath)
         Catch ex As Exception
             AddToLog("[LoadInstructive(0)@Debugger]Error: ", ex.Message, True)
+            MsgBox("No se logro entender la informacion dentro del instructivo", MsgBoxStyle.Critical, "Instructivo")
+            Complementos.Closing()
         End Try
         SetCurrentStatus("Esperando...")
         'DEFINICIONES PARA LA INSTALACION ----------
         Try
             WhereDoIInstall()
             If Instructive_Package_IsComponent = "False" Then 'Si es componente no se comprueba su previa existencia
-                If IsUninstall = False Then
-                    If My.Computer.FileSystem.FileExists(ExePackage) = True Then
+                If IsUninstall = False Then 'Si es modo instalacion (no es una desinstalacion)
+                    If My.Computer.FileSystem.FileExists(ExePackage) = True Then 'Si existe entonces se activa el Modo Asistente
                         If RegistradorInstalacion IsNot Nothing Then
                             AssistantMode()
                             Exit Sub
                         End If
                     End If
-                Else
+                Else 'si es desinstalacion, entonces desinstala
                     Uninstall()
                     Exit Sub
                 End If
@@ -255,9 +313,11 @@ Public Class Main
                     Registry.LocalMachine.CreateSubKey(x32bits)
                 End If
                 RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
-                If Instructive_Package_BitsArch = "64" Then 'Si el PC es de x32 pero el programa es de x64
-                    MsgBox("El programa a instalar requiere de un procesador de 64bits y no de 32bits", MsgBoxStyle.Critical, "No se puede instalar")
-                    End
+                If IsSilence = False Then
+                    If Instructive_Package_BitsArch = "64" Then 'Si el PC es de x32 pero el programa es de x64
+                        MsgBox("El programa por instalar requiere de un procesador de 64bits y no de 32bits", MsgBoxStyle.Critical, "No se puede instalar")
+                        End
+                    End If
                 End If
             ElseIf ArquitecturaSO = "64" Then 'Si el PC es x64
                 If Instructive_Package_BitsArch = "32" Then 'Si el PC es de x64 pero el programa es de x32
@@ -285,7 +345,16 @@ Public Class Main
             Else
                 InstallerPathBuilder = Instructive_Installer_InstallFolder
             End If
-            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe" 'Indicamos la ruta del ejecutable que se esta instalando
+            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName 'Indicamos la ruta del ejecutable que se esta instalando
+            Try
+                Dim Icono As Icon = Icon.ExtractAssociatedIcon(ExePackage)
+                AppIcon.Image = Icono.ToBitmap
+                Me.Icon = Icono
+                AppIcon.Visible = True
+            Catch ex As Exception
+                AppIcon.Visible = False
+                AddToLog("[WhereDoIInstall(1)@Main]Error: ", ex.Message, True)
+            End Try
         Catch ex As Exception
             AddToLog("[WhereDoIInstall@Debugger]Error: ", ex.Message, True)
         End Try
@@ -293,7 +362,7 @@ Public Class Main
 
     Sub InstallIt() 'Comenzamos el proceso de descarga del paquete indicado por el instructivo
         Try
-            SetCurrentStatus("Descargando el paquete de instalacion...")
+            SetCurrentStatus("Descargando el paquete de instalación...")
             ProgressBarStatus.Style = ProgressBarStyle.Blocks
             DownloadInstallPackageURI = New Uri(Instructive_Installer_InstallPackage)
             DownloadInstallPackage.DownloadFileAsync(DownloadInstallPackageURI, DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip")
