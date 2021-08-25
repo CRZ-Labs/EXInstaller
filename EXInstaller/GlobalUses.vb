@@ -13,13 +13,17 @@ Module GlobalUses
     Public IsUninstall As Boolean = False
     Public IsReinstall As Boolean = False
     Public IsAssistant As Boolean = False
+    Public IsUpdate As Boolean = False
+    Public IsSilence As Boolean = False
+    Public IsForced As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
-    Public CanSaveLog As Boolean = False 'True solo para el desarrollo. El log se guarda en DIRTemp. Recomendado dejar en False.
+    Public CanSaveLog As Boolean = False 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.
     Public x32bits As String
     Public x64x32bits As String
-    Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName & ".exe"
+    Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName
     Public DownloadedZipPackage As String = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
+    Public shObj As Object
 
     Public ArquitecturaSO As String
     Public PackageSize As String
@@ -34,6 +38,7 @@ Module GlobalUses
     Public Instructive_Package_Status As String
     Public Instructive_Package_AssemblyName As String
     Public Instructive_Package_AssemblyVersion As String
+    Public Instructive_Package_Description As String
     Public Instructive_Package_Company As String
     Public Instructive_Package_WebUrl As String
     Public Instructive_Package_PackageName As String
@@ -46,6 +51,7 @@ Module GlobalUses
     Public Instructive_Installer_NeedRestart As String
     Public Instructive_Installer_NeedStartUp As String
     Public Instructive_Installer_NeedElevateAccess As String
+    Public Instructive_Installer_NeedToStart As String
     Public Instructive_Installer_InstallFolder As String
     Public Instructive_Installer_EULA As String
     Public Instructive_Installer_Installer As String

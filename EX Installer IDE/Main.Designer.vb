@@ -32,6 +32,7 @@ Partial Class Main
         Me.TextBox3 = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Button1 = New System.Windows.Forms.Button()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblSubTitle
@@ -109,6 +110,7 @@ Partial Class Main
         '
         'Button1
         '
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button1.Location = New System.Drawing.Point(195, 130)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(105, 29)
@@ -116,11 +118,22 @@ Partial Class Main
         Me.Button1.Text = "Injectar"
         Me.Button1.UseVisualStyleBackColor = True
         '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Label4.Location = New System.Drawing.Point(437, 127)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(32, 13)
+        Me.Label4.TabIndex = 14
+        Me.Label4.Text = "Crear"
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(494, 171)
+        Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.TextBox3)
         Me.Controls.Add(Me.Label3)
@@ -149,5 +162,5 @@ Partial Class Main
     Friend WithEvents TextBox3 As System.Windows.Forms.TextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Button1 As System.Windows.Forms.Button
-
+    Friend WithEvents Label4 As Label
 End Class
