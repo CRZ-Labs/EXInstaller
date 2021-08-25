@@ -77,6 +77,7 @@ Public Class InstructiveCreator
                 vbCrLf & "Status=" & cb_Package_Status.Text &
                 vbCrLf & "AssemblyName=" & tb_Package_AssemblyName.Text &
                 vbCrLf & "AssemblyVersion=" & tb_Package_AssemblyVersion.Text &
+                vbCrLf & "Description=" & tb_Package_Description.Text &
                 vbCrLf & "Company=" & tb_Package_Company.Text &
                 vbCrLf & "WebUrl=" & tb_Package_WebUrl.Text &
                 vbCrLf & "PackageName=" & tb_Package_PackageName.Text &

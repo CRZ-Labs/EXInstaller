@@ -110,6 +110,8 @@ Partial Class InstructiveCreator
         Me.btnBack = New System.Windows.Forms.Button()
         Me.btnCreate = New System.Windows.Forms.Button()
         Me.ToolTips = New System.Windows.Forms.ToolTip(Me.components)
+        Me.lbl_Package_9 = New System.Windows.Forms.Label()
+        Me.tb_Package_Description = New System.Windows.Forms.TextBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.gb_General.SuspendLayout()
@@ -267,6 +269,8 @@ Partial Class InstructiveCreator
         'gb_Package
         '
         Me.gb_Package.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.gb_Package.Controls.Add(Me.tb_Package_Description)
+        Me.gb_Package.Controls.Add(Me.lbl_Package_9)
         Me.gb_Package.Controls.Add(Me.cb_Package_Status)
         Me.gb_Package.Controls.Add(Me.lbl_Package_0)
         Me.gb_Package.Controls.Add(Me.cb_Package_ProcessorArchitecture)
@@ -296,7 +300,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_Status.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Package_Status.FormattingEnabled = True
         Me.cb_Package_Status.Items.AddRange(New Object() {"True", "False"})
-        Me.cb_Package_Status.Location = New System.Drawing.Point(147, 22)
+        Me.cb_Package_Status.Location = New System.Drawing.Point(147, 12)
         Me.cb_Package_Status.Name = "cb_Package_Status"
         Me.cb_Package_Status.Size = New System.Drawing.Size(318, 21)
         Me.cb_Package_Status.TabIndex = 0
@@ -306,7 +310,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_0.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_0.AutoSize = True
-        Me.lbl_Package_0.Location = New System.Drawing.Point(21, 25)
+        Me.lbl_Package_0.Location = New System.Drawing.Point(21, 15)
         Me.lbl_Package_0.Name = "lbl_Package_0"
         Me.lbl_Package_0.Size = New System.Drawing.Size(43, 13)
         Me.lbl_Package_0.TabIndex = 18
@@ -318,7 +322,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_ProcessorArchitecture.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Package_ProcessorArchitecture.FormattingEnabled = True
         Me.cb_Package_ProcessorArchitecture.Items.AddRange(New Object() {"32", "64"})
-        Me.cb_Package_ProcessorArchitecture.Location = New System.Drawing.Point(147, 230)
+        Me.cb_Package_ProcessorArchitecture.Location = New System.Drawing.Point(147, 246)
         Me.cb_Package_ProcessorArchitecture.Name = "cb_Package_ProcessorArchitecture"
         Me.cb_Package_ProcessorArchitecture.Size = New System.Drawing.Size(318, 21)
         Me.cb_Package_ProcessorArchitecture.TabIndex = 8
@@ -328,7 +332,7 @@ Partial Class InstructiveCreator
         '
         Me.cb_Package_InstallerVersion.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Package_InstallerVersion.FormattingEnabled = True
-        Me.cb_Package_InstallerVersion.Location = New System.Drawing.Point(147, 204)
+        Me.cb_Package_InstallerVersion.Location = New System.Drawing.Point(147, 220)
         Me.cb_Package_InstallerVersion.Name = "cb_Package_InstallerVersion"
         Me.cb_Package_InstallerVersion.Size = New System.Drawing.Size(318, 21)
         Me.cb_Package_InstallerVersion.TabIndex = 7
@@ -339,7 +343,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_IsComponent.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Package_IsComponent.FormattingEnabled = True
         Me.cb_Package_IsComponent.Items.AddRange(New Object() {"True", "False"})
-        Me.cb_Package_IsComponent.Location = New System.Drawing.Point(147, 178)
+        Me.cb_Package_IsComponent.Location = New System.Drawing.Point(147, 194)
         Me.cb_Package_IsComponent.Name = "cb_Package_IsComponent"
         Me.cb_Package_IsComponent.Size = New System.Drawing.Size(318, 21)
         Me.cb_Package_IsComponent.TabIndex = 6
@@ -349,7 +353,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_8.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_8.AutoSize = True
-        Me.lbl_Package_8.Location = New System.Drawing.Point(21, 233)
+        Me.lbl_Package_8.Location = New System.Drawing.Point(21, 249)
         Me.lbl_Package_8.Name = "lbl_Package_8"
         Me.lbl_Package_8.Size = New System.Drawing.Size(120, 13)
         Me.lbl_Package_8.TabIndex = 14
@@ -360,7 +364,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_7.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_7.AutoSize = True
-        Me.lbl_Package_7.Location = New System.Drawing.Point(21, 207)
+        Me.lbl_Package_7.Location = New System.Drawing.Point(21, 223)
         Me.lbl_Package_7.Name = "lbl_Package_7"
         Me.lbl_Package_7.Size = New System.Drawing.Size(87, 13)
         Me.lbl_Package_7.TabIndex = 12
@@ -371,7 +375,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_6.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_6.AutoSize = True
-        Me.lbl_Package_6.Location = New System.Drawing.Point(21, 181)
+        Me.lbl_Package_6.Location = New System.Drawing.Point(21, 197)
         Me.lbl_Package_6.Name = "lbl_Package_6"
         Me.lbl_Package_6.Size = New System.Drawing.Size(78, 13)
         Me.lbl_Package_6.TabIndex = 10
@@ -381,7 +385,7 @@ Partial Class InstructiveCreator
         'tb_Package_PackageName
         '
         Me.tb_Package_PackageName.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_PackageName.Location = New System.Drawing.Point(147, 152)
+        Me.tb_Package_PackageName.Location = New System.Drawing.Point(147, 168)
         Me.tb_Package_PackageName.Name = "tb_Package_PackageName"
         Me.tb_Package_PackageName.Size = New System.Drawing.Size(318, 20)
         Me.tb_Package_PackageName.TabIndex = 5
@@ -390,7 +394,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_5.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_5.AutoSize = True
-        Me.lbl_Package_5.Location = New System.Drawing.Point(21, 155)
+        Me.lbl_Package_5.Location = New System.Drawing.Point(21, 171)
         Me.lbl_Package_5.Name = "lbl_Package_5"
         Me.lbl_Package_5.Size = New System.Drawing.Size(87, 13)
         Me.lbl_Package_5.TabIndex = 8
@@ -400,7 +404,7 @@ Partial Class InstructiveCreator
         'tb_Package_WebUrl
         '
         Me.tb_Package_WebUrl.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_WebUrl.Location = New System.Drawing.Point(147, 126)
+        Me.tb_Package_WebUrl.Location = New System.Drawing.Point(147, 142)
         Me.tb_Package_WebUrl.Name = "tb_Package_WebUrl"
         Me.tb_Package_WebUrl.Size = New System.Drawing.Size(318, 20)
         Me.tb_Package_WebUrl.TabIndex = 4
@@ -409,7 +413,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_4.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_4.AutoSize = True
-        Me.lbl_Package_4.Location = New System.Drawing.Point(21, 129)
+        Me.lbl_Package_4.Location = New System.Drawing.Point(21, 145)
         Me.lbl_Package_4.Name = "lbl_Package_4"
         Me.lbl_Package_4.Size = New System.Drawing.Size(61, 13)
         Me.lbl_Package_4.TabIndex = 6
@@ -419,7 +423,7 @@ Partial Class InstructiveCreator
         'tb_Package_Company
         '
         Me.tb_Package_Company.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_Company.Location = New System.Drawing.Point(147, 100)
+        Me.tb_Package_Company.Location = New System.Drawing.Point(147, 116)
         Me.tb_Package_Company.Name = "tb_Package_Company"
         Me.tb_Package_Company.Size = New System.Drawing.Size(318, 20)
         Me.tb_Package_Company.TabIndex = 3
@@ -428,7 +432,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_3.AutoSize = True
-        Me.lbl_Package_3.Location = New System.Drawing.Point(21, 103)
+        Me.lbl_Package_3.Location = New System.Drawing.Point(21, 119)
         Me.lbl_Package_3.Name = "lbl_Package_3"
         Me.lbl_Package_3.Size = New System.Drawing.Size(57, 13)
         Me.lbl_Package_3.TabIndex = 4
@@ -438,7 +442,7 @@ Partial Class InstructiveCreator
         'tb_Package_AssemblyVersion
         '
         Me.tb_Package_AssemblyVersion.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_AssemblyVersion.Location = New System.Drawing.Point(147, 74)
+        Me.tb_Package_AssemblyVersion.Location = New System.Drawing.Point(147, 64)
         Me.tb_Package_AssemblyVersion.Name = "tb_Package_AssemblyVersion"
         Me.tb_Package_AssemblyVersion.Size = New System.Drawing.Size(318, 20)
         Me.tb_Package_AssemblyVersion.TabIndex = 2
@@ -447,7 +451,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_2.AutoSize = True
-        Me.lbl_Package_2.Location = New System.Drawing.Point(21, 77)
+        Me.lbl_Package_2.Location = New System.Drawing.Point(21, 67)
         Me.lbl_Package_2.Name = "lbl_Package_2"
         Me.lbl_Package_2.Size = New System.Drawing.Size(95, 13)
         Me.lbl_Package_2.TabIndex = 2
@@ -457,7 +461,7 @@ Partial Class InstructiveCreator
         'tb_Package_AssemblyName
         '
         Me.tb_Package_AssemblyName.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_AssemblyName.Location = New System.Drawing.Point(147, 48)
+        Me.tb_Package_AssemblyName.Location = New System.Drawing.Point(147, 38)
         Me.tb_Package_AssemblyName.Name = "tb_Package_AssemblyName"
         Me.tb_Package_AssemblyName.Size = New System.Drawing.Size(318, 20)
         Me.tb_Package_AssemblyName.TabIndex = 1
@@ -466,7 +470,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Package_1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Package_1.AutoSize = True
-        Me.lbl_Package_1.Location = New System.Drawing.Point(21, 51)
+        Me.lbl_Package_1.Location = New System.Drawing.Point(21, 41)
         Me.lbl_Package_1.Name = "lbl_Package_1"
         Me.lbl_Package_1.Size = New System.Drawing.Size(88, 13)
         Me.lbl_Package_1.TabIndex = 0
@@ -1073,6 +1077,26 @@ Partial Class InstructiveCreator
         Me.ToolTips.ReshowDelay = 3000
         Me.ToolTips.ShowAlways = True
         '
+        'lbl_Package_9
+        '
+        Me.lbl_Package_9.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_Package_9.AutoSize = True
+        Me.lbl_Package_9.Location = New System.Drawing.Point(21, 93)
+        Me.lbl_Package_9.Name = "lbl_Package_9"
+        Me.lbl_Package_9.Size = New System.Drawing.Size(66, 13)
+        Me.lbl_Package_9.TabIndex = 20
+        Me.lbl_Package_9.Text = "Description: "
+        Me.ToolTips.SetToolTip(Me.lbl_Package_9, resources.GetString("lbl_Package_9.ToolTip"))
+        '
+        'tb_Package_Description
+        '
+        Me.tb_Package_Description.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tb_Package_Description.Location = New System.Drawing.Point(147, 90)
+        Me.tb_Package_Description.Name = "tb_Package_Description"
+        Me.tb_Package_Description.Size = New System.Drawing.Size(318, 20)
+        Me.tb_Package_Description.TabIndex = 21
+        Me.tb_Package_Description.Text = "NULL"
+        '
         'InstructiveCreator
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1199,4 +1223,6 @@ Partial Class InstructiveCreator
     Friend WithEvents Label4 As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents Label6 As Label
+    Friend WithEvents tb_Package_Description As TextBox
+    Friend WithEvents lbl_Package_9 As Label
 End Class

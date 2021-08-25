@@ -120,6 +120,11 @@
   <metadata name="ToolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="lbl_Package_9.ToolTip" xml:space="preserve">
+    <value>La arquitectura del procesador al cual va dirigido el programa (32 o 64 Bits).
+Ej: EXInstallerIDE funciona en equipos de 32Bits, si quiero instalar EXInstallerIDE en un computador de 32, entonces pondre 32.
+Si EXInstallerIDE no funcionase en equipos de 32, entonces pondria 64.</value>
+  </data>
   <data name="lbl_Package_8.ToolTip" xml:space="preserve">
     <value>La arquitectura del procesador al cual va dirigido el programa (32 o 64 Bits).
 Ej: EXInstallerIDE funciona en equipos de 32Bits, si quiero instalar EXInstallerIDE en un computador de 32, entonces pondre 32.

@@ -13,6 +13,7 @@ Module GlobalUses
     Public IsUninstall As Boolean = False
     Public IsReinstall As Boolean = False
     Public IsAssistant As Boolean = False
+    Public IsUpdate As Boolean = False
     Public IsSilence As Boolean = False
     Public IsForced As Boolean = False
     Public InstallerPathBuilder As String
@@ -37,6 +38,7 @@ Module GlobalUses
     Public Instructive_Package_Status As String
     Public Instructive_Package_AssemblyName As String
     Public Instructive_Package_AssemblyVersion As String
+    Public Instructive_Package_Description As String
     Public Instructive_Package_Company As String
     Public Instructive_Package_WebUrl As String
     Public Instructive_Package_PackageName As String

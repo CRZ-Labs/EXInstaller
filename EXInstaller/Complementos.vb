@@ -15,22 +15,43 @@ Module Instalador
         Try
             Main.SetCurrentStatus("Creando los directorios para la instalación...")
             If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
-                If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = True Then
-                    My.Computer.FileSystem.DeleteDirectory(InstallerPathBuilder, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                If My.Computer.FileSystem.DirectoryExists(DIRTemp & "\" & Instructive_Package_AssemblyName) = True Then
+                    My.Computer.FileSystem.DeleteDirectory(DIRTemp & "\" & Instructive_Package_AssemblyName, FileIO.DeleteDirectoryOption.DeleteAllContents)
                 End If
                 If My.Computer.FileSystem.DirectoryExists(InstallerPathBuilder) = False Then
                     My.Computer.FileSystem.CreateDirectory(InstallerPathBuilder)
                 End If
+                My.Computer.FileSystem.CreateDirectory(DIRTemp & "\" & Instructive_Package_AssemblyName)
             End If
             'VER SI EL EJECUTABLE SE ESTA EJECUTANDO ----------
             CheckIfRunning()
             'INSTALACION (COPIADO) DE FICHEROS EN ZIP A UBICACION FINAL DE INSTALACION ----------
-            'IO.Directory.CreateDirectory(InstallerPathBuilder) 'Creamos forzosamente el directorio de instalacion
             Main.SetCurrentStatus("Copiando los datos...")
-            ZipFile.ExtractToDirectory(DownloadedZipPackage, InstallerPathBuilder)
-            'Dim output As Object = shObj.NameSpace(InstallerPathBuilder)
-            'Dim input As Object = shObj.NameSpace(DownloadedZipPackage)
-            'output.CopyHere((input.Items), 4)
+            ZipFile.ExtractToDirectory(DownloadedZipPackage, DIRTemp & "\" & Instructive_Package_AssemblyName)
+            If IsUpdate = True Then
+                Dim filesToDelete As New ArrayList
+                Dim foldersToDelete As New ArrayList
+                filesToDelete.Add("uninstall.exe")
+                For Each addToList As String In My.Computer.FileSystem.GetFiles(DIRTemp & "\" & Instructive_Package_AssemblyName)
+                    filesToDelete.Add(IO.Path.GetFileName(addToList))
+                Next
+                For Each addToList As String In My.Computer.FileSystem.GetDirectories(DIRTemp & "\" & Instructive_Package_AssemblyName)
+                    foldersToDelete.Add(addToList.Remove(0, addToList.LastIndexOf("\") + 1))
+                Next
+                For Each fileDelete As String In My.Computer.FileSystem.GetFiles(InstallerPathBuilder)
+                    Dim result = filesToDelete.ToArray().Any(Function(x) x.ToString().Contains(IO.Path.GetFileName(fileDelete)))
+                    If result = True Then
+                        My.Computer.FileSystem.DeleteFile(fileDelete)
+                    End If
+                Next
+                For Each folderDelete As String In My.Computer.FileSystem.GetDirectories(InstallerPathBuilder)
+                    Dim result = foldersToDelete.ToArray().Any(Function(x) x.ToString().Contains(folderDelete.Remove(0, folderDelete.LastIndexOf("\") + 1)))
+                    If result = True Then
+                        My.Computer.FileSystem.DeleteDirectory(folderDelete, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    End If
+                Next
+            End If
+            My.Computer.FileSystem.MoveDirectory(DIRTemp & "\" & Instructive_Package_AssemblyName, InstallerPathBuilder, True)
             Threading.Thread.Sleep(50)
             If Instructive_Package_IsComponent = False Then 'Si es componente, no se crearan accesos directos ni nada, es solo un componente.
                 'CREACION DEL ACCESO DIRECTO EN LA CARPETA DE PROGRAMAS DE WINDOWS ----------
@@ -91,7 +112,7 @@ Module Instalador
             End If
             CreateRegistry()
         Catch ex As Exception
-            MsgBox("Erro al instalar" & vbCrLf & ex.Message, MsgBoxStyle.Critical, "EX Installer")
+            MsgBox("Error al instalar" & vbCrLf & ex.Message, MsgBoxStyle.Critical, "EX Installer")
             AddToLog("[Install@Complementos]Error: ", ex.Message, True)
             Closing()
         End Try
@@ -104,7 +125,10 @@ Module Instalador
                 RegistradorInstalacion.SetValue("InstallDate", DateTime.Now.ToString("dd/MM/yyyy"), RegistryValueKind.String)
                 RegistradorInstalacion.SetValue("InstallLocation", InstallerPathBuilder, RegistryValueKind.ExpandString)
                 RegistradorInstalacion.SetValue("Size", FormatBytes(PackageSize), RegistryValueKind.String)
-                RegistradorInstalacion.SetValue("Comments", Instructive_Package_AssemblyName & " Official Software by " & Instructive_Package_Company, RegistryValueKind.String)
+                If Instructive_Package_Description = "NULL" Or Instructive_Package_Description = Nothing Then
+                    Instructive_Package_Description = Instructive_Package_AssemblyName & " by " & Instructive_Package_Company
+                End If
+                RegistradorInstalacion.SetValue("Comments", Instructive_Package_Description, RegistryValueKind.String)
                 RegistradorInstalacion.SetValue("DisplayIcon", ExePackage, RegistryValueKind.String)
                 RegistradorInstalacion.SetValue("DisplayName", Instructive_Package_AssemblyName, RegistryValueKind.String)
                 RegistradorInstalacion.SetValue("DisplayVersion", Instructive_Package_AssemblyVersion, RegistryValueKind.String)
@@ -319,7 +343,7 @@ Module Instalador
 
     Sub CheckIfRunning()
         Try
-            Dim ProcesosLocales As Process() = Process.GetProcessesByName(Instructive_Package_AssemblyName)
+            Dim ProcesosLocales As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Instructive_Package_PackageName))
             If ProcesosLocales.Length >= 1 Then
                 TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Paused)
                 Main.SetCurrentStatus("[!] Instancia abierta.")

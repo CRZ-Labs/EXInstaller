@@ -127,6 +127,25 @@ Public Class Main
             Button2.Enabled = True
             Button1.Visible = True
             Button2.Visible = True
+            'check updates
+            Try
+                Dim VersionReader As RegistryKey
+            VersionReader = RegistradorInstalacion
+                If VersionReader IsNot Nothing Then
+                    Dim version1 = New Version(VersionReader.GetValue("DisplayVersion"))
+                    Dim version2 = New Version(Instructive_Package_AssemblyVersion)
+                    Dim result = version1.CompareTo(version2)
+                    If (result > 0) Then
+                        'Sobre actualizado
+                    ElseIf (result < 0) Then
+                        'Nueva version
+                        Button1.Text = "Actualizar"
+                        IsUpdate = True
+                    End If
+                End If
+            Catch ex As Exception
+                AddToLog("[AssistantMode@Main]Error: ", ex.Message, True)
+            End Try
         Else
             End
         End If
@@ -144,6 +163,7 @@ Public Class Main
             Button2.Enabled = False
             Button1.Visible = False
             Button2.Visible = False
+            IsUpdate = True
             InstallIt()
         Else
             InstallIt()
@@ -220,6 +240,7 @@ Public Class Main
             Instructive_Package_Status = GetIniValue("Package", "Status", InstructiveFilePath)
             Instructive_Package_AssemblyName = GetIniValue("Package", "AssemblyName", InstructiveFilePath)
             Instructive_Package_AssemblyVersion = GetIniValue("Package", "AssemblyVersion", InstructiveFilePath)
+            Instructive_Package_Description = GetIniValue("Package", "Description", InstructiveFilePath)
             Instructive_Package_Company = GetIniValue("Package", "Company", InstructiveFilePath)
             Instructive_Package_WebUrl = GetIniValue("Package", "WebUrl", InstructiveFilePath)
             Instructive_Package_PackageName = GetIniValue("Package", "PackageName", InstructiveFilePath)
@@ -252,14 +273,14 @@ Public Class Main
         Try
             WhereDoIInstall()
             If Instructive_Package_IsComponent = "False" Then 'Si es componente no se comprueba su previa existencia
-                If IsUninstall = False Then
-                    If My.Computer.FileSystem.FileExists(ExePackage) = True Then
+                If IsUninstall = False Then 'Si es modo instalacion (no es una desinstalacion)
+                    If My.Computer.FileSystem.FileExists(ExePackage) = True Then 'Si existe entonces se activa el Modo Asistente
                         If RegistradorInstalacion IsNot Nothing Then
                             AssistantMode()
                             Exit Sub
                         End If
                     End If
-                Else
+                Else 'si es desinstalacion, entonces desinstala
                     Uninstall()
                     Exit Sub
                 End If
@@ -325,6 +346,15 @@ Public Class Main
                 InstallerPathBuilder = Instructive_Installer_InstallFolder
             End If
             ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName 'Indicamos la ruta del ejecutable que se esta instalando
+            Try
+                Dim Icono As Icon = Icon.ExtractAssociatedIcon(ExePackage)
+                AppIcon.Image = Icono.ToBitmap
+                Me.Icon = Icono
+                AppIcon.Visible = True
+            Catch ex As Exception
+                AppIcon.Visible = False
+                AddToLog("[WhereDoIInstall(1)@Main]Error: ", ex.Message, True)
+            End Try
         Catch ex As Exception
             AddToLog("[WhereDoIInstall@Debugger]Error: ", ex.Message, True)
         End Try

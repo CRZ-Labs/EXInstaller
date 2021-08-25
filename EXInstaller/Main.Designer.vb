@@ -31,6 +31,8 @@ Partial Class Main
         Me.lblStatusStatus = New System.Windows.Forms.Label()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
+        Me.AppIcon = New System.Windows.Forms.PictureBox()
+        CType(Me.AppIcon, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ProgressBarStatus
@@ -115,11 +117,23 @@ Partial Class Main
         Me.Button2.UseVisualStyleBackColor = True
         Me.Button2.Visible = False
         '
+        'AppIcon
+        '
+        Me.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.AppIcon.Location = New System.Drawing.Point(442, 12)
+        Me.AppIcon.Name = "AppIcon"
+        Me.AppIcon.Size = New System.Drawing.Size(40, 40)
+        Me.AppIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.AppIcon.TabIndex = 8
+        Me.AppIcon.TabStop = False
+        Me.AppIcon.Visible = False
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(494, 171)
+        Me.Controls.Add(Me.AppIcon)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.lblStatusStatus)
@@ -135,6 +149,7 @@ Partial Class Main
         Me.Name = "Main"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Instalador"
+        CType(Me.AppIcon, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -147,4 +162,5 @@ Partial Class Main
     Friend WithEvents lblStatusStatus As System.Windows.Forms.Label
     Friend WithEvents Button1 As Button
     Friend WithEvents Button2 As Button
+    Friend WithEvents AppIcon As PictureBox
 End Class
