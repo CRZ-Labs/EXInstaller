@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1684
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EX Installer", "EXInstaller\EX Installer.vbproj", "{B5950F14-1BB6-4B65-89EC-493798F203F8}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EX Installer IDE", "EX Installer IDE\EX Installer IDE.vbproj", "{5E90C7D4-FE2A-4E58-A49B-08A814D50F56}"
@@ -22,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAEB56EE-1D9A-4FD0-BB2E-096B50BAD675}
 	EndGlobalSection
 EndGlobal
