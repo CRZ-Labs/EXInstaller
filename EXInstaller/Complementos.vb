@@ -223,24 +223,13 @@ Module Instalador
                 AddToLog("[CreateNeedStartupRegistry@Complementos]Error: ", ex.Message, True)
             End Try
         End If
-            Closing()
+        Closing()
     End Sub
 #End Region
 
 #Region "Uninstaller"
-    'El Uninstaller hace todo lo contrario al Installer
     Sub Uninstall()
-        'CONFIRMACION PARA LA DESINSTALACION ----------
-        If IsSilence = False Then
-            If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_AssemblyName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                Closing()
-                Exit Sub
-            End If
-        End If
-        'VER SI SE ESTA EJECUTANDO EL EJECUTALBLE ----------
-        CheckIfRunning()
         Try
-            ExePackage = InstallerPathBuilder & "\" & Instructive_Package_PackageName
             'ELIMINACION DE LA UBICACION DE INSTALACION ----------
             Try
                 Main.SetCurrentStatus("Eliminando los directorios de instalación...")
@@ -321,24 +310,6 @@ Module Instalador
         End If
         Closing()
     End Sub
-    'Problemas actuales
-    '   1) No se elimina la ruta de instalacion porque "Algo la esta usando".
-    '   2) El uninstaller.exe falla y no se xq y ademas algunas veces nos se elimina
-    '       OSEA: por asi decirlo, no lanza el asistente
-    '   3) el "asistente" al desinstalar tampoco elimina la ruta.
-    '   Posibles causas
-    '      1) Las variables estan mal ordenadas
-    '       2) Dios no tiene piedad
-    '       3) El modo asistente inicia dentro de la carpeta de instalacion y no hace el "puente"
-    '   Posible soluciones
-    '       morir
-    '       Cuando se inicie uninstall.exe AUTOMATICAMENTE se copiara a otra ubicacion fuera de la carpeta de instalacion para servir como asistente
-    '           segun yo, cuando se inicia uninstaller.exe no es hasta que el usuario hace algo -precionar uno de los dos botones- hasta que se copie
-    '           a  la ubicacion temporal.
-    '       rediseñar todo el inicio del programa, esto seria lo mejor, asi evito morir cada vez.
-
-    '30/06/2021 05:55 PM Chile
-    '
 #End Region
 
     Sub CheckIfRunning()
@@ -457,9 +428,9 @@ Module Complementos
                  vbCrLf & "Instructive_HelpLinks_AppAbout=" & Instructive_HelpLinks_AppAbout &
                  vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
                  vbCrLf & vbCrLf & vbCrLf)
+            Main.Close()
         Catch
         End Try
-        End
     End Sub
 
     Dim DoubleBytes As Double
