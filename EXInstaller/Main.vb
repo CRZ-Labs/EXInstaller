@@ -8,16 +8,17 @@ Public Class Main
 
     Private Sub Debugger_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SetCurrentStatus("Inicializando...")
-        TaskbarProgress.SetState(Me.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
+        'TaskbarProgress.SetState(Me.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
         StartParametros = Command() 'Lee argumentos
         Try
-            If My.Computer.FileSystem.DirectoryExists(DIRCommons) = True Then
+            If My.Computer.FileSystem.DirectoryExists(DIRCommons) Then
                 My.Computer.FileSystem.DeleteDirectory(DIRCommons, FileIO.DeleteDirectoryOption.DeleteAllContents)
             End If
-            If My.Computer.FileSystem.DirectoryExists(DIRTemp) = True Then
+            My.Computer.FileSystem.CreateDirectory(DIRCommons)
+            My.Computer.FileSystem.WriteAllText(DIRCommons & "\Install.log", Nothing, False)
+            If My.Computer.FileSystem.DirectoryExists(DIRTemp) Then
                 My.Computer.FileSystem.DeleteDirectory(DIRTemp, FileIO.DeleteDirectoryOption.DeleteAllContents)
             End If
-            My.Computer.FileSystem.CreateDirectory(DIRCommons)
             My.Computer.FileSystem.CreateDirectory(DIRTemp)
         Catch ex As Exception
             AddToLog("[Main_Load(Basics)@Main]Error: ", ex.Message, True)
@@ -33,7 +34,7 @@ Public Class Main
             For Each arg As String In Argumentos
                 If arg.Contains("/Uninstall") Then
                     IsUninstall = True
-                    UninstallIt()
+                    UninstallIt(False)
                     parametro = parametro.Replace("/Uninstall", Nothing)
                 ElseIf arg.Contains("-F") Then
                     IsForced = True
@@ -149,13 +150,20 @@ Public Class Main
             End
         End If
     End Sub
-    Sub UninstallIt()
+    Sub UninstallIt(ByVal Now As Boolean)
         If IsSilence = False Then
-            If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_AssemblyName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                IsUninstall = True
-                lblTitle.Text = "Desinstalando..."
-                lblSubTitle.Text = "Espere mientras la desinstalación del programa se completa."
-                Text = "Desinstalar " & Instructive_Package_AssemblyName
+            IsUninstall = True
+            lblTitle.Text = "Desinstalando..."
+            lblSubTitle.Text = "Espere mientras la desinstalación del programa se completa."
+            Text = "Desinstalar " & Instructive_Package_AssemblyName
+            If Now Then
+                If MessageBox.Show("¿Want to uninstall the Software called " & Instructive_Package_AssemblyName & "?", "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    CheckIfRunning()
+                    Uninstall()
+                End If
+            End If
+        Else
+            If Now Then
                 CheckIfRunning()
                 Uninstall()
             End If
@@ -201,7 +209,7 @@ Public Class Main
             For Each info As ManagementObject In objArquitectura.Get()
                 ArquitecturaSO = info.Properties("AddressWidth").Value.ToString()
             Next info
-            If My.Computer.FileSystem.FileExists(InstructiveFilePath) = True Then
+            If My.Computer.FileSystem.FileExists(InstructiveFilePath) Then
                 My.Computer.FileSystem.DeleteFile(InstructiveFilePath)
             End If
         Catch ex As Exception
@@ -296,13 +304,16 @@ Public Class Main
                         If RegistradorInstalacion IsNot Nothing Then
                             AssistantMode()
                             Exit Sub
+                        Else
+                            InstallIt()
                         End If
+                    Else
+                        InstallIt()
                     End If
                 Else 'si es desinstalacion, entonces desinstala
-                    Uninstall()
+                    UninstallIt(True)
                     Exit Sub
                 End If
-                InstallIt()
             Else
                 IsComponent()
                 InstallIt()
@@ -318,8 +329,8 @@ Public Class Main
                 If IsReinstall = False Then
                     If Instructive_Installer_EnableDowngrade = "True" Then
                         Dim InstructiveVersionCheck As String = GetIniValue("Versions", AssemblyVersion, InstructiveFilePath)
-                        If InstructiveVersionCheck IsNot Nothing Then
-                            If Not AssemblyVersion = Instructive_Package_AssemblyVersion Then
+                        If InstructiveVersionCheck <> Nothing Then
+                            If (AssemblyVersion = Instructive_Package_AssemblyVersion) = False Then
                                 If MessageBox.Show("¿Quiere descargar e instalar la versión " & AssemblyVersion & " en vez de la versión recomendada (" & Instructive_Package_AssemblyVersion & ")?", "Control de Versión", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                                     Instructive_Installer_InstallPackage = GetIniValue("Versions", AssemblyVersion, InstructiveFilePath)
                                 End If
@@ -334,7 +345,7 @@ Public Class Main
             DownloadInstallPackage.DownloadFileAsync(DownloadInstallPackageURI, DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip")
         Catch ex As Exception
             AddToLog("[InstallIt@Main]Error: ", ex.Message, True)
-            MsgBox("No se pudo descargar el instructivo", MsgBoxStyle.Critical, "Instructivo")
+            MsgBox("No se pudo descargar el instructivo" & vbCrLf & ex.Message, MsgBoxStyle.Critical, "Instructivo")
             Complementos.Closing()
         End Try
     End Sub
@@ -346,7 +357,7 @@ Public Class Main
         LoadInstructive()
     End Sub
     Private Sub Desinstalar_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        UninstallIt()
+        UninstallIt(True)
     End Sub
     Private Sub Reinstalar_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Reinstall()
@@ -440,7 +451,7 @@ Public Class Main
                 AppIcon.Visible = True
             Catch ex As Exception
                 AppIcon.Visible = False
-                AddToLog("[WhereDoIInstall(1)@Main]Error: ", ex.Message, True)
+                AddToLog("[WhereDoIInstall(1)@Main]Error: ", ex.Message, False)
             End Try
         Catch ex As Exception
             AddToLog("[WhereDoIInstall@Main]Error: ", ex.Message, True)

@@ -353,7 +353,7 @@ Module Complementos
     Sub AddToLog(ByVal Header As String, ByVal content As String, Optional ByVal flag As Boolean = False)
         Try
             Dim Overwrite As Boolean = False
-            If My.Computer.FileSystem.FileExists(DIRCommons & "\Install.log") = True Then
+            If My.Computer.FileSystem.FileExists(DIRCommons & "\Install.log") Then
                 Overwrite = True
             End If
             Dim LogContent As String = "(" & DateTime.Now.ToString("hh:mm:ss tt dd/MM/yyyy") & ")"
@@ -363,10 +363,12 @@ Module Complementos
                 LogContent &= Header & content
             End If
             Console.WriteLine(LogContent)
-            If CanSaveLog = True Then
+            'MsgBox("Mensaje: " & LogContent) 'SOLO PARA PRUEBAS
+            If CanSaveLog Then
                 My.Computer.FileSystem.WriteAllText(DIRCommons & "\Install.log", LogContent & vbCrLf, Overwrite)
             End If
-        Catch
+        Catch ex As Exception
+            MsgBox("Error (AddToLog)." & vbCrLf & ex.Message)
         End Try
     End Sub
 
@@ -429,7 +431,7 @@ Module Complementos
                  vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
                  vbCrLf & vbCrLf & vbCrLf)
             Main.Close()
-        Catch
+        Catch ex As Exception
         End Try
     End Sub
 
