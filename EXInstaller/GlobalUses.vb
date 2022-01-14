@@ -12,6 +12,7 @@ Module GlobalUses
     Public IsInjected As Boolean = True
     Public IsUninstall As Boolean = False
     Public IsReinstall As Boolean = False
+    Public IsComponent As Boolean = False
     Public IsAssistant As Boolean = False
     Public IsUpdate As Boolean = False
     Public IsSilence As Boolean = False
@@ -55,8 +56,11 @@ Module GlobalUses
     Public Instructive_Installer_InstallFolder As String
     Public Instructive_Installer_EULA As String
     Public Instructive_Installer_Installer As String
+    Public Instructive_Installer_AfterInstall As String
+    Public Instructive_Installer_AfterUninstall As String
     Public Instructive_Installer_InstallPackage As String
 
+    Public Instructive_HelpLinks_TelemetryPost As String
     Public Instructive_HelpLinks_ChangeLogLink As String
     Public Instructive_HelpLinks_UseGuide As String
     Public Instructive_HelpLinks_AppAbout As String

@@ -3,6 +3,7 @@ Imports System.Text
 Imports Microsoft.Win32
 Imports System.IO
 Imports System.IO.Compression
+Imports System.Net
 Module Instalador
 
 #Region "Installer"
@@ -184,6 +185,7 @@ Module Instalador
         FinishInstall()
     End Sub
     Sub FinishInstall()
+        SendTelemetry()
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Normal)
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
         Main.SetCurrentStatus("Instalación finalizada correctamente.")
@@ -223,12 +225,28 @@ Module Instalador
                 AddToLog("[CreateNeedStartupRegistry@Complementos]Error: ", ex.Message, True)
             End Try
         End If
+        'EJECUCION DE AfterInstall
+        Try
+            If Instructive_Installer_AfterInstall <> "NULL" Then
+                If Instructive_Installer_AfterInstall.Contains(";") Then
+                    Dim Args() As String = Instructive_Installer_AfterInstall.Split(";")
+                    If Args(1) = "NULL" Then
+                        Process.Start(Args(0))
+                    Else
+                        Process.Start(Args(0), Args(1))
+                    End If
+                End If
+            End If
+        Catch ex As Exception
+            AddToLog("[RunAfterInstall@Complementos]Error: ", ex.Message, True)
+        End Try
         Closing()
     End Sub
 #End Region
 
 #Region "Uninstaller"
     Sub Uninstall()
+        Threading.Thread.Sleep(500)
         Try
             'ELIMINACION DE LA UBICACION DE INSTALACION ----------
             Try
@@ -304,6 +322,7 @@ Module Instalador
         FinishUninstall()
     End Sub
     Sub FinishUninstall()
+        SendTelemetry()
         Main.SetCurrentStatus("Desinstalación finalizada correctamente.")
         If IsSilence = False Then
             MsgBox("Se ha desinstalado correctamente", MsgBoxStyle.Information, "Desinstalación Completada")
@@ -313,6 +332,7 @@ Module Instalador
 #End Region
 
     Sub CheckIfRunning()
+        Main.SetCurrentStatus("Verificando instancias abiertas...")
         Try
             Dim ProcesosLocales As Process() = Process.GetProcessesByName(IO.Path.GetFileNameWithoutExtension(Instructive_Package_PackageName))
             If ProcesosLocales.Length >= 1 Then
@@ -348,6 +368,49 @@ isrunningagain:
     End Sub
 
 End Module
+Module Telemetria
+    Sub SendTelemetry()
+        Try
+            If Instructive_HelpLinks_TelemetryPost <> "NULL" Then
+                If My.Computer.FileSystem.FileExists(DIRCommons & "\Install.log") Then
+                    Dim InstallerLogContent As String = My.Computer.FileSystem.ReadAllText(DIRCommons & "\Install.log")
+                    Dim request As WebRequest = WebRequest.Create(Instructive_HelpLinks_TelemetryPost)
+                    request.Method = "POST"
+                    Dim postData As String = "ident=" & AssemblyName & "_" & Environment.UserName & "_EXInstaller_" & CreateIdentification("Identification") & "&log=" & InstallerLogContent
+                    Dim byteArray As Byte() = Encoding.UTF8.GetBytes(postData)
+                    request.ContentType = "application/x-www-form-urlencoded"
+                    request.ContentLength = byteArray.Length
+                    Dim dataStream As Stream = request.GetRequestStream()
+                    dataStream.Write(byteArray, 0, byteArray.Length)
+                    dataStream.Close()
+                    Dim response As WebResponse = request.GetResponse()
+                    Console.WriteLine(CType(response, HttpWebResponse).StatusDescription)
+                    If CType(response, HttpWebResponse).StatusDescription = "OK" Then
+                    Else
+                    End If
+                    response.Close()
+                    My.Computer.FileSystem.DeleteFile(DIRCommons & "\Install.log")
+                Else
+                    Exit Sub
+                End If
+            End If
+        Catch
+        End Try
+    End Sub
+    Function CreateIdentification(ByVal CreatedString As String)
+        Dim obj As New Random()
+        Dim posibles As String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        Dim longitud As Integer = posibles.Length
+        Dim letra As Char
+        Dim longitudnuevacadena As Integer = 35
+        Dim nuevacadena As String = Nothing
+        For i As Integer = 0 To longitudnuevacadena - 1
+            letra = posibles(obj.[Next](longitud))
+            nuevacadena += letra.ToString()
+        Next
+        Return nuevacadena
+    End Function
+End Module
 Module Complementos
 
     Sub AddToLog(ByVal Header As String, ByVal content As String, Optional ByVal flag As Boolean = False)
@@ -368,7 +431,7 @@ Module Complementos
                 My.Computer.FileSystem.WriteAllText(DIRCommons & "\Install.log", LogContent & vbCrLf, Overwrite)
             End If
         Catch ex As Exception
-            MsgBox("Error (AddToLog)." & vbCrLf & ex.Message)
+            'MsgBox("Error (AddToLog)." & vbCrLf & ex.Message)
         End Try
     End Sub
 

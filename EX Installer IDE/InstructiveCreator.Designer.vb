@@ -37,6 +37,8 @@ Partial Class InstructiveCreator
         Me.tb_General_Open = New System.Windows.Forms.TextBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.gb_Package = New System.Windows.Forms.GroupBox()
+        Me.tb_Package_Description = New System.Windows.Forms.TextBox()
+        Me.lbl_Package_9 = New System.Windows.Forms.Label()
         Me.cb_Package_Status = New System.Windows.Forms.ComboBox()
         Me.lbl_Package_0 = New System.Windows.Forms.Label()
         Me.cb_Package_ProcessorArchitecture = New System.Windows.Forms.ComboBox()
@@ -59,12 +61,16 @@ Partial Class InstructiveCreator
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.lbl_Installer_Title = New System.Windows.Forms.Label()
         Me.gb_Installer = New System.Windows.Forms.GroupBox()
+        Me.tb_Installer_AfterUninstall = New System.Windows.Forms.TextBox()
+        Me.lbl_Installer_11 = New System.Windows.Forms.Label()
+        Me.tb_Installer_AfterInstall = New System.Windows.Forms.TextBox()
+        Me.lbl_Installer_10 = New System.Windows.Forms.Label()
         Me.cb_Installer_NeedElevateAccess = New System.Windows.Forms.ComboBox()
         Me.cb_Installer_NeedRestart = New System.Windows.Forms.ComboBox()
         Me.cb_Installer_EnableDowngrade = New System.Windows.Forms.ComboBox()
         Me.cb_Installer_Status = New System.Windows.Forms.ComboBox()
         Me.tb_Installer_InstallPackage = New System.Windows.Forms.TextBox()
-        Me.lbl_Installer_10 = New System.Windows.Forms.Label()
+        Me.lbl_Installer_12 = New System.Windows.Forms.Label()
         Me.tb_Installer_Installer = New System.Windows.Forms.TextBox()
         Me.lbl_Installer_9 = New System.Windows.Forms.Label()
         Me.tb_Installer_EULA = New System.Windows.Forms.TextBox()
@@ -81,6 +87,8 @@ Partial Class InstructiveCreator
         Me.lbl_Installer_1 = New System.Windows.Forms.Label()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.gb_HelpLinks = New System.Windows.Forms.GroupBox()
+        Me.tb_HelpLinks_TelemetryPost = New System.Windows.Forms.TextBox()
+        Me.lbl_HelpLinks_0 = New System.Windows.Forms.Label()
         Me.tb_HelpLinks_Contact = New System.Windows.Forms.TextBox()
         Me.lbl_HelpLinks_4 = New System.Windows.Forms.Label()
         Me.tb_HelpLinks_AppAbout = New System.Windows.Forms.TextBox()
@@ -110,8 +118,6 @@ Partial Class InstructiveCreator
         Me.btnBack = New System.Windows.Forms.Button()
         Me.btnCreate = New System.Windows.Forms.Button()
         Me.ToolTips = New System.Windows.Forms.ToolTip(Me.components)
-        Me.lbl_Package_9 = New System.Windows.Forms.Label()
-        Me.tb_Package_Description = New System.Windows.Forms.TextBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.gb_General.SuspendLayout()
@@ -295,6 +301,26 @@ Partial Class InstructiveCreator
         Me.gb_Package.TabIndex = 1
         Me.gb_Package.TabStop = False
         '
+        'tb_Package_Description
+        '
+        Me.tb_Package_Description.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tb_Package_Description.Location = New System.Drawing.Point(147, 90)
+        Me.tb_Package_Description.Name = "tb_Package_Description"
+        Me.tb_Package_Description.Size = New System.Drawing.Size(318, 20)
+        Me.tb_Package_Description.TabIndex = 21
+        Me.tb_Package_Description.Text = "NULL"
+        '
+        'lbl_Package_9
+        '
+        Me.lbl_Package_9.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_Package_9.AutoSize = True
+        Me.lbl_Package_9.Location = New System.Drawing.Point(21, 93)
+        Me.lbl_Package_9.Name = "lbl_Package_9"
+        Me.lbl_Package_9.Size = New System.Drawing.Size(66, 13)
+        Me.lbl_Package_9.TabIndex = 20
+        Me.lbl_Package_9.Text = "Description: "
+        Me.ToolTips.SetToolTip(Me.lbl_Package_9, resources.GetString("lbl_Package_9.ToolTip"))
+        '
         'cb_Package_Status
         '
         Me.cb_Package_Status.Anchor = System.Windows.Forms.AnchorStyles.None
@@ -336,7 +362,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_InstallerVersion.Name = "cb_Package_InstallerVersion"
         Me.cb_Package_InstallerVersion.Size = New System.Drawing.Size(318, 21)
         Me.cb_Package_InstallerVersion.TabIndex = 7
-        Me.cb_Package_InstallerVersion.Text = "1.2.0.0"
+        Me.cb_Package_InstallerVersion.Text = "1.4.0.0"
         '
         'cb_Package_IsComponent
         '
@@ -511,12 +537,16 @@ Partial Class InstructiveCreator
         'gb_Installer
         '
         Me.gb_Installer.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.gb_Installer.Controls.Add(Me.tb_Installer_AfterUninstall)
+        Me.gb_Installer.Controls.Add(Me.lbl_Installer_11)
+        Me.gb_Installer.Controls.Add(Me.tb_Installer_AfterInstall)
+        Me.gb_Installer.Controls.Add(Me.lbl_Installer_10)
         Me.gb_Installer.Controls.Add(Me.cb_Installer_NeedElevateAccess)
         Me.gb_Installer.Controls.Add(Me.cb_Installer_NeedRestart)
         Me.gb_Installer.Controls.Add(Me.cb_Installer_EnableDowngrade)
         Me.gb_Installer.Controls.Add(Me.cb_Installer_Status)
         Me.gb_Installer.Controls.Add(Me.tb_Installer_InstallPackage)
-        Me.gb_Installer.Controls.Add(Me.lbl_Installer_10)
+        Me.gb_Installer.Controls.Add(Me.lbl_Installer_12)
         Me.gb_Installer.Controls.Add(Me.tb_Installer_Installer)
         Me.gb_Installer.Controls.Add(Me.lbl_Installer_9)
         Me.gb_Installer.Controls.Add(Me.tb_Installer_EULA)
@@ -533,16 +563,56 @@ Partial Class InstructiveCreator
         Me.gb_Installer.Controls.Add(Me.lbl_Installer_1)
         Me.gb_Installer.Location = New System.Drawing.Point(153, 79)
         Me.gb_Installer.Name = "gb_Installer"
-        Me.gb_Installer.Size = New System.Drawing.Size(486, 272)
+        Me.gb_Installer.Size = New System.Drawing.Size(486, 333)
         Me.gb_Installer.TabIndex = 3
         Me.gb_Installer.TabStop = False
+        '
+        'tb_Installer_AfterUninstall
+        '
+        Me.tb_Installer_AfterUninstall.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tb_Installer_AfterUninstall.Location = New System.Drawing.Point(147, 278)
+        Me.tb_Installer_AfterUninstall.Name = "tb_Installer_AfterUninstall"
+        Me.tb_Installer_AfterUninstall.Size = New System.Drawing.Size(318, 20)
+        Me.tb_Installer_AfterUninstall.TabIndex = 23
+        Me.tb_Installer_AfterUninstall.Text = "NULL"
+        '
+        'lbl_Installer_11
+        '
+        Me.lbl_Installer_11.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_Installer_11.AutoSize = True
+        Me.lbl_Installer_11.Location = New System.Drawing.Point(21, 281)
+        Me.lbl_Installer_11.Name = "lbl_Installer_11"
+        Me.lbl_Installer_11.Size = New System.Drawing.Size(78, 13)
+        Me.lbl_Installer_11.TabIndex = 24
+        Me.lbl_Installer_11.Text = "After Uninstall: "
+        Me.ToolTips.SetToolTip(Me.lbl_Installer_11, "Indica el link de descarga directo del paquete con los binarios a instalar.")
+        '
+        'tb_Installer_AfterInstall
+        '
+        Me.tb_Installer_AfterInstall.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tb_Installer_AfterInstall.Location = New System.Drawing.Point(147, 252)
+        Me.tb_Installer_AfterInstall.Name = "tb_Installer_AfterInstall"
+        Me.tb_Installer_AfterInstall.Size = New System.Drawing.Size(318, 20)
+        Me.tb_Installer_AfterInstall.TabIndex = 21
+        Me.tb_Installer_AfterInstall.Text = "NULL"
+        '
+        'lbl_Installer_10
+        '
+        Me.lbl_Installer_10.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_Installer_10.AutoSize = True
+        Me.lbl_Installer_10.Location = New System.Drawing.Point(21, 255)
+        Me.lbl_Installer_10.Name = "lbl_Installer_10"
+        Me.lbl_Installer_10.Size = New System.Drawing.Size(65, 13)
+        Me.lbl_Installer_10.TabIndex = 22
+        Me.lbl_Installer_10.Text = "After Install: "
+        Me.ToolTips.SetToolTip(Me.lbl_Installer_10, "Indica el link de descarga directo del paquete con los binarios a instalar.")
         '
         'cb_Installer_NeedElevateAccess
         '
         Me.cb_Installer_NeedElevateAccess.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Installer_NeedElevateAccess.FormattingEnabled = True
         Me.cb_Installer_NeedElevateAccess.Items.AddRange(New Object() {"True", "False"})
-        Me.cb_Installer_NeedElevateAccess.Location = New System.Drawing.Point(147, 116)
+        Me.cb_Installer_NeedElevateAccess.Location = New System.Drawing.Point(147, 122)
         Me.cb_Installer_NeedElevateAccess.Name = "cb_Installer_NeedElevateAccess"
         Me.cb_Installer_NeedElevateAccess.Size = New System.Drawing.Size(318, 21)
         Me.cb_Installer_NeedElevateAccess.TabIndex = 4
@@ -552,7 +622,7 @@ Partial Class InstructiveCreator
         '
         Me.cb_Installer_NeedRestart.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Installer_NeedRestart.FormattingEnabled = True
-        Me.cb_Installer_NeedRestart.Location = New System.Drawing.Point(147, 64)
+        Me.cb_Installer_NeedRestart.Location = New System.Drawing.Point(147, 70)
         Me.cb_Installer_NeedRestart.Name = "cb_Installer_NeedRestart"
         Me.cb_Installer_NeedRestart.Size = New System.Drawing.Size(318, 21)
         Me.cb_Installer_NeedRestart.TabIndex = 2
@@ -562,7 +632,7 @@ Partial Class InstructiveCreator
         '
         Me.cb_Installer_EnableDowngrade.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Installer_EnableDowngrade.FormattingEnabled = True
-        Me.cb_Installer_EnableDowngrade.Location = New System.Drawing.Point(147, 38)
+        Me.cb_Installer_EnableDowngrade.Location = New System.Drawing.Point(147, 44)
         Me.cb_Installer_EnableDowngrade.Name = "cb_Installer_EnableDowngrade"
         Me.cb_Installer_EnableDowngrade.Size = New System.Drawing.Size(318, 21)
         Me.cb_Installer_EnableDowngrade.TabIndex = 1
@@ -573,7 +643,7 @@ Partial Class InstructiveCreator
         Me.cb_Installer_Status.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cb_Installer_Status.FormattingEnabled = True
         Me.cb_Installer_Status.Items.AddRange(New Object() {"True", "False"})
-        Me.cb_Installer_Status.Location = New System.Drawing.Point(147, 12)
+        Me.cb_Installer_Status.Location = New System.Drawing.Point(147, 18)
         Me.cb_Installer_Status.Name = "cb_Installer_Status"
         Me.cb_Installer_Status.Size = New System.Drawing.Size(318, 21)
         Me.cb_Installer_Status.TabIndex = 0
@@ -582,35 +652,36 @@ Partial Class InstructiveCreator
         'tb_Installer_InstallPackage
         '
         Me.tb_Installer_InstallPackage.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_InstallPackage.Location = New System.Drawing.Point(147, 246)
+        Me.tb_Installer_InstallPackage.Location = New System.Drawing.Point(147, 304)
         Me.tb_Installer_InstallPackage.Name = "tb_Installer_InstallPackage"
         Me.tb_Installer_InstallPackage.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_InstallPackage.TabIndex = 9
         '
-        'lbl_Installer_10
+        'lbl_Installer_12
         '
-        Me.lbl_Installer_10.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.lbl_Installer_10.AutoSize = True
-        Me.lbl_Installer_10.Location = New System.Drawing.Point(21, 249)
-        Me.lbl_Installer_10.Name = "lbl_Installer_10"
-        Me.lbl_Installer_10.Size = New System.Drawing.Size(95, 13)
-        Me.lbl_Installer_10.TabIndex = 20
-        Me.lbl_Installer_10.Text = "Installer Package: "
-        Me.ToolTips.SetToolTip(Me.lbl_Installer_10, "Indica el link de descarga directo del paquete con los binarios a instalar.")
+        Me.lbl_Installer_12.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_Installer_12.AutoSize = True
+        Me.lbl_Installer_12.Location = New System.Drawing.Point(21, 307)
+        Me.lbl_Installer_12.Name = "lbl_Installer_12"
+        Me.lbl_Installer_12.Size = New System.Drawing.Size(95, 13)
+        Me.lbl_Installer_12.TabIndex = 20
+        Me.lbl_Installer_12.Text = "Installer Package: "
+        Me.ToolTips.SetToolTip(Me.lbl_Installer_12, "Indica el link de descarga directo del paquete con los binarios a instalar.")
         '
         'tb_Installer_Installer
         '
         Me.tb_Installer_Installer.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_Installer.Location = New System.Drawing.Point(147, 220)
+        Me.tb_Installer_Installer.Location = New System.Drawing.Point(147, 226)
         Me.tb_Installer_Installer.Name = "tb_Installer_Installer"
         Me.tb_Installer_Installer.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_Installer.TabIndex = 8
+        Me.tb_Installer_Installer.Text = "NULL"
         '
         'lbl_Installer_9
         '
         Me.lbl_Installer_9.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_9.AutoSize = True
-        Me.lbl_Installer_9.Location = New System.Drawing.Point(21, 223)
+        Me.lbl_Installer_9.Location = New System.Drawing.Point(21, 229)
         Me.lbl_Installer_9.Name = "lbl_Installer_9"
         Me.lbl_Installer_9.Size = New System.Drawing.Size(49, 13)
         Me.lbl_Installer_9.TabIndex = 18
@@ -621,7 +692,7 @@ Partial Class InstructiveCreator
         'tb_Installer_EULA
         '
         Me.tb_Installer_EULA.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_EULA.Location = New System.Drawing.Point(147, 194)
+        Me.tb_Installer_EULA.Location = New System.Drawing.Point(147, 200)
         Me.tb_Installer_EULA.Name = "tb_Installer_EULA"
         Me.tb_Installer_EULA.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_EULA.TabIndex = 7
@@ -631,7 +702,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_8.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_8.AutoSize = True
-        Me.lbl_Installer_8.Location = New System.Drawing.Point(21, 197)
+        Me.lbl_Installer_8.Location = New System.Drawing.Point(21, 203)
         Me.lbl_Installer_8.Name = "lbl_Installer_8"
         Me.lbl_Installer_8.Size = New System.Drawing.Size(41, 13)
         Me.lbl_Installer_8.TabIndex = 16
@@ -641,7 +712,7 @@ Partial Class InstructiveCreator
         'tb_Installer_InstallFolder
         '
         Me.tb_Installer_InstallFolder.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_InstallFolder.Location = New System.Drawing.Point(147, 168)
+        Me.tb_Installer_InstallFolder.Location = New System.Drawing.Point(147, 174)
         Me.tb_Installer_InstallFolder.Name = "tb_Installer_InstallFolder"
         Me.tb_Installer_InstallFolder.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_InstallFolder.TabIndex = 6
@@ -650,7 +721,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_7.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_7.AutoSize = True
-        Me.lbl_Installer_7.Location = New System.Drawing.Point(21, 171)
+        Me.lbl_Installer_7.Location = New System.Drawing.Point(21, 177)
         Me.lbl_Installer_7.Name = "lbl_Installer_7"
         Me.lbl_Installer_7.Size = New System.Drawing.Size(72, 13)
         Me.lbl_Installer_7.TabIndex = 14
@@ -660,7 +731,7 @@ Partial Class InstructiveCreator
         'tb_Installer_NeedToStart
         '
         Me.tb_Installer_NeedToStart.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_NeedToStart.Location = New System.Drawing.Point(147, 142)
+        Me.tb_Installer_NeedToStart.Location = New System.Drawing.Point(147, 148)
         Me.tb_Installer_NeedToStart.Name = "tb_Installer_NeedToStart"
         Me.tb_Installer_NeedToStart.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_NeedToStart.TabIndex = 5
@@ -670,7 +741,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_6.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_6.AutoSize = True
-        Me.lbl_Installer_6.Location = New System.Drawing.Point(21, 145)
+        Me.lbl_Installer_6.Location = New System.Drawing.Point(21, 151)
         Me.lbl_Installer_6.Name = "lbl_Installer_6"
         Me.lbl_Installer_6.Size = New System.Drawing.Size(76, 13)
         Me.lbl_Installer_6.TabIndex = 12
@@ -683,7 +754,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_5.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_5.AutoSize = True
-        Me.lbl_Installer_5.Location = New System.Drawing.Point(21, 119)
+        Me.lbl_Installer_5.Location = New System.Drawing.Point(21, 125)
         Me.lbl_Installer_5.Name = "lbl_Installer_5"
         Me.lbl_Installer_5.Size = New System.Drawing.Size(71, 13)
         Me.lbl_Installer_5.TabIndex = 10
@@ -693,16 +764,17 @@ Partial Class InstructiveCreator
         'tb_Installer_NeedStartUp
         '
         Me.tb_Installer_NeedStartUp.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Installer_NeedStartUp.Location = New System.Drawing.Point(147, 90)
+        Me.tb_Installer_NeedStartUp.Location = New System.Drawing.Point(147, 96)
         Me.tb_Installer_NeedStartUp.Name = "tb_Installer_NeedStartUp"
         Me.tb_Installer_NeedStartUp.Size = New System.Drawing.Size(318, 20)
         Me.tb_Installer_NeedStartUp.TabIndex = 3
+        Me.tb_Installer_NeedStartUp.Text = "False"
         '
         'lbl_Installer_4
         '
         Me.lbl_Installer_4.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_4.AutoSize = True
-        Me.lbl_Installer_4.Location = New System.Drawing.Point(21, 93)
+        Me.lbl_Installer_4.Location = New System.Drawing.Point(21, 99)
         Me.lbl_Installer_4.Name = "lbl_Installer_4"
         Me.lbl_Installer_4.Size = New System.Drawing.Size(81, 13)
         Me.lbl_Installer_4.TabIndex = 8
@@ -714,7 +786,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_3.AutoSize = True
-        Me.lbl_Installer_3.Location = New System.Drawing.Point(21, 67)
+        Me.lbl_Installer_3.Location = New System.Drawing.Point(21, 73)
         Me.lbl_Installer_3.Name = "lbl_Installer_3"
         Me.lbl_Installer_3.Size = New System.Drawing.Size(76, 13)
         Me.lbl_Installer_3.TabIndex = 6
@@ -725,7 +797,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_2.AutoSize = True
-        Me.lbl_Installer_2.Location = New System.Drawing.Point(21, 41)
+        Me.lbl_Installer_2.Location = New System.Drawing.Point(21, 47)
         Me.lbl_Installer_2.Name = "lbl_Installer_2"
         Me.lbl_Installer_2.Size = New System.Drawing.Size(104, 13)
         Me.lbl_Installer_2.TabIndex = 4
@@ -736,7 +808,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_Installer_1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_Installer_1.AutoSize = True
-        Me.lbl_Installer_1.Location = New System.Drawing.Point(21, 15)
+        Me.lbl_Installer_1.Location = New System.Drawing.Point(21, 21)
         Me.lbl_Installer_1.Name = "lbl_Installer_1"
         Me.lbl_Installer_1.Size = New System.Drawing.Size(43, 13)
         Me.lbl_Installer_1.TabIndex = 2
@@ -757,6 +829,8 @@ Partial Class InstructiveCreator
         'gb_HelpLinks
         '
         Me.gb_HelpLinks.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.gb_HelpLinks.Controls.Add(Me.tb_HelpLinks_TelemetryPost)
+        Me.gb_HelpLinks.Controls.Add(Me.lbl_HelpLinks_0)
         Me.gb_HelpLinks.Controls.Add(Me.tb_HelpLinks_Contact)
         Me.gb_HelpLinks.Controls.Add(Me.lbl_HelpLinks_4)
         Me.gb_HelpLinks.Controls.Add(Me.tb_HelpLinks_AppAbout)
@@ -771,10 +845,30 @@ Partial Class InstructiveCreator
         Me.gb_HelpLinks.TabIndex = 6
         Me.gb_HelpLinks.TabStop = False
         '
+        'tb_HelpLinks_TelemetryPost
+        '
+        Me.tb_HelpLinks_TelemetryPost.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tb_HelpLinks_TelemetryPost.Location = New System.Drawing.Point(147, 74)
+        Me.tb_HelpLinks_TelemetryPost.Name = "tb_HelpLinks_TelemetryPost"
+        Me.tb_HelpLinks_TelemetryPost.Size = New System.Drawing.Size(318, 20)
+        Me.tb_HelpLinks_TelemetryPost.TabIndex = 29
+        Me.tb_HelpLinks_TelemetryPost.Text = "NULL"
+        '
+        'lbl_HelpLinks_0
+        '
+        Me.lbl_HelpLinks_0.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lbl_HelpLinks_0.AutoSize = True
+        Me.lbl_HelpLinks_0.Location = New System.Drawing.Point(21, 77)
+        Me.lbl_HelpLinks_0.Name = "lbl_HelpLinks_0"
+        Me.lbl_HelpLinks_0.Size = New System.Drawing.Size(83, 13)
+        Me.lbl_HelpLinks_0.TabIndex = 30
+        Me.lbl_HelpLinks_0.Text = "Telemetry Post: "
+        Me.ToolTips.SetToolTip(Me.lbl_HelpLinks_0, "Indica el link al documento con los cambios de version.")
+        '
         'tb_HelpLinks_Contact
         '
         Me.tb_HelpLinks_Contact.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_HelpLinks_Contact.Location = New System.Drawing.Point(147, 165)
+        Me.tb_HelpLinks_Contact.Location = New System.Drawing.Point(147, 178)
         Me.tb_HelpLinks_Contact.Name = "tb_HelpLinks_Contact"
         Me.tb_HelpLinks_Contact.Size = New System.Drawing.Size(318, 20)
         Me.tb_HelpLinks_Contact.TabIndex = 3
@@ -783,7 +877,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_HelpLinks_4.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_HelpLinks_4.AutoSize = True
-        Me.lbl_HelpLinks_4.Location = New System.Drawing.Point(21, 168)
+        Me.lbl_HelpLinks_4.Location = New System.Drawing.Point(21, 181)
         Me.lbl_HelpLinks_4.Name = "lbl_HelpLinks_4"
         Me.lbl_HelpLinks_4.Size = New System.Drawing.Size(50, 13)
         Me.lbl_HelpLinks_4.TabIndex = 28
@@ -794,7 +888,7 @@ Partial Class InstructiveCreator
         'tb_HelpLinks_AppAbout
         '
         Me.tb_HelpLinks_AppAbout.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_HelpLinks_AppAbout.Location = New System.Drawing.Point(147, 139)
+        Me.tb_HelpLinks_AppAbout.Location = New System.Drawing.Point(147, 152)
         Me.tb_HelpLinks_AppAbout.Name = "tb_HelpLinks_AppAbout"
         Me.tb_HelpLinks_AppAbout.Size = New System.Drawing.Size(318, 20)
         Me.tb_HelpLinks_AppAbout.TabIndex = 2
@@ -803,7 +897,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_HelpLinks_3.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_HelpLinks_3.AutoSize = True
-        Me.lbl_HelpLinks_3.Location = New System.Drawing.Point(21, 142)
+        Me.lbl_HelpLinks_3.Location = New System.Drawing.Point(21, 155)
         Me.lbl_HelpLinks_3.Name = "lbl_HelpLinks_3"
         Me.lbl_HelpLinks_3.Size = New System.Drawing.Size(63, 13)
         Me.lbl_HelpLinks_3.TabIndex = 26
@@ -813,7 +907,7 @@ Partial Class InstructiveCreator
         'tb_HelpLinks_UseGuide
         '
         Me.tb_HelpLinks_UseGuide.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_HelpLinks_UseGuide.Location = New System.Drawing.Point(147, 113)
+        Me.tb_HelpLinks_UseGuide.Location = New System.Drawing.Point(147, 126)
         Me.tb_HelpLinks_UseGuide.Name = "tb_HelpLinks_UseGuide"
         Me.tb_HelpLinks_UseGuide.Size = New System.Drawing.Size(318, 20)
         Me.tb_HelpLinks_UseGuide.TabIndex = 1
@@ -822,7 +916,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_HelpLinks_2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_HelpLinks_2.AutoSize = True
-        Me.lbl_HelpLinks_2.Location = New System.Drawing.Point(21, 116)
+        Me.lbl_HelpLinks_2.Location = New System.Drawing.Point(21, 129)
         Me.lbl_HelpLinks_2.Name = "lbl_HelpLinks_2"
         Me.lbl_HelpLinks_2.Size = New System.Drawing.Size(61, 13)
         Me.lbl_HelpLinks_2.TabIndex = 24
@@ -832,7 +926,7 @@ Partial Class InstructiveCreator
         'tb_HelpLinks_ChangeLog
         '
         Me.tb_HelpLinks_ChangeLog.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_HelpLinks_ChangeLog.Location = New System.Drawing.Point(147, 87)
+        Me.tb_HelpLinks_ChangeLog.Location = New System.Drawing.Point(147, 100)
         Me.tb_HelpLinks_ChangeLog.Name = "tb_HelpLinks_ChangeLog"
         Me.tb_HelpLinks_ChangeLog.Size = New System.Drawing.Size(318, 20)
         Me.tb_HelpLinks_ChangeLog.TabIndex = 0
@@ -841,7 +935,7 @@ Partial Class InstructiveCreator
         '
         Me.lbl_HelpLinks_1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.lbl_HelpLinks_1.AutoSize = True
-        Me.lbl_HelpLinks_1.Location = New System.Drawing.Point(21, 90)
+        Me.lbl_HelpLinks_1.Location = New System.Drawing.Point(21, 103)
         Me.lbl_HelpLinks_1.Name = "lbl_HelpLinks_1"
         Me.lbl_HelpLinks_1.Size = New System.Drawing.Size(68, 13)
         Me.lbl_HelpLinks_1.TabIndex = 22
@@ -1077,26 +1171,6 @@ Partial Class InstructiveCreator
         Me.ToolTips.ReshowDelay = 3000
         Me.ToolTips.ShowAlways = True
         '
-        'lbl_Package_9
-        '
-        Me.lbl_Package_9.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.lbl_Package_9.AutoSize = True
-        Me.lbl_Package_9.Location = New System.Drawing.Point(21, 93)
-        Me.lbl_Package_9.Name = "lbl_Package_9"
-        Me.lbl_Package_9.Size = New System.Drawing.Size(66, 13)
-        Me.lbl_Package_9.TabIndex = 20
-        Me.lbl_Package_9.Text = "Description: "
-        Me.ToolTips.SetToolTip(Me.lbl_Package_9, resources.GetString("lbl_Package_9.ToolTip"))
-        '
-        'tb_Package_Description
-        '
-        Me.tb_Package_Description.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.tb_Package_Description.Location = New System.Drawing.Point(147, 90)
-        Me.tb_Package_Description.Name = "tb_Package_Description"
-        Me.tb_Package_Description.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Package_Description.TabIndex = 21
-        Me.tb_Package_Description.Text = "NULL"
-        '
         'InstructiveCreator
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1178,7 +1252,7 @@ Partial Class InstructiveCreator
     Friend WithEvents lbl_Installer_Title As Label
     Friend WithEvents lbl_Installer_1 As Label
     Friend WithEvents tb_Installer_InstallPackage As TextBox
-    Friend WithEvents lbl_Installer_10 As Label
+    Friend WithEvents lbl_Installer_12 As Label
     Friend WithEvents tb_Installer_Installer As TextBox
     Friend WithEvents lbl_Installer_9 As Label
     Friend WithEvents tb_Installer_EULA As TextBox
@@ -1225,4 +1299,10 @@ Partial Class InstructiveCreator
     Friend WithEvents Label6 As Label
     Friend WithEvents tb_Package_Description As TextBox
     Friend WithEvents lbl_Package_9 As Label
+    Friend WithEvents tb_Installer_AfterUninstall As TextBox
+    Friend WithEvents lbl_Installer_11 As Label
+    Friend WithEvents tb_Installer_AfterInstall As TextBox
+    Friend WithEvents lbl_Installer_10 As Label
+    Friend WithEvents tb_HelpLinks_TelemetryPost As TextBox
+    Friend WithEvents lbl_HelpLinks_0 As Label
 End Class

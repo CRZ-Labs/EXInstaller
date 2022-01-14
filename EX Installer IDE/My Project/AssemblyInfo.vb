@@ -13,8 +13,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Injector de instructivo para EXInstaller")> 
 <Assembly: AssemblyDescription("Injector de instructivo")> 
 <Assembly: AssemblyCompany("CRZ Labs")> 
-<Assembly: AssemblyProduct("EXInstallerIDE")> 
-<Assembly: AssemblyCopyright("Copyright © 2021 CRZ Labs. Algunos derechos reservados.")> 
+<Assembly: AssemblyProduct("EXInstallerIDE")>
+<Assembly: AssemblyCopyright("Copyright © 2022 CRZ Labs. Algunos derechos reservados.")>
 <Assembly: AssemblyTrademark("CRZ Labs")> 
 
 <Assembly: ComVisible(False)> 
@@ -33,7 +33,7 @@ Imports System.Runtime.InteropServices
 ' mediante el asterisco ('*'), como se muestra a continuación:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.2.0.0")>
-<Assembly: AssemblyFileVersion("1.2.0.0")>
+<Assembly: AssemblyVersion("1.4.0.0")>
+<Assembly: AssemblyFileVersion("1.4.0.0")>
 
 <Assembly: NeutralResourcesLanguageAttribute("es")> 

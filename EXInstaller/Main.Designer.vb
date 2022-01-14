@@ -32,6 +32,7 @@ Partial Class Main
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.AppIcon = New System.Windows.Forms.PictureBox()
+        Me.lblInfo = New System.Windows.Forms.Label()
         CType(Me.AppIcon, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -54,7 +55,7 @@ Partial Class Main
         Me.lblTitle.Name = "lblTitle"
         Me.lblTitle.Size = New System.Drawing.Size(470, 26)
         Me.lblTitle.TabIndex = 1
-        Me.lblTitle.Text = "Instalando..."
+        Me.lblTitle.Text = "Iniciando..."
         '
         'lblCurrentStatus
         '
@@ -85,18 +86,19 @@ Partial Class Main
         Me.lblSubTitle.Name = "lblSubTitle"
         Me.lblSubTitle.Size = New System.Drawing.Size(454, 72)
         Me.lblSubTitle.TabIndex = 4
-        Me.lblSubTitle.Text = "Espere mientras el proceso de instalación se completa..."
+        Me.lblSubTitle.Text = "Por favor espere..."
         '
         'lblStatusStatus
         '
-        Me.lblStatusStatus.Location = New System.Drawing.Point(12, 149)
+        Me.lblStatusStatus.Location = New System.Drawing.Point(250, 149)
         Me.lblStatusStatus.Name = "lblStatusStatus"
-        Me.lblStatusStatus.Size = New System.Drawing.Size(470, 13)
+        Me.lblStatusStatus.Size = New System.Drawing.Size(232, 13)
         Me.lblStatusStatus.TabIndex = 5
         Me.lblStatusStatus.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'Button1
         '
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button1.Enabled = False
         Me.Button1.Location = New System.Drawing.Point(135, 67)
         Me.Button1.Name = "Button1"
@@ -108,6 +110,7 @@ Partial Class Main
         '
         'Button2
         '
+        Me.Button2.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button2.Enabled = False
         Me.Button2.Location = New System.Drawing.Point(250, 67)
         Me.Button2.Name = "Button2"
@@ -120,6 +123,7 @@ Partial Class Main
         'AppIcon
         '
         Me.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.AppIcon.Cursor = System.Windows.Forms.Cursors.Hand
         Me.AppIcon.Location = New System.Drawing.Point(442, 12)
         Me.AppIcon.Name = "AppIcon"
         Me.AppIcon.Size = New System.Drawing.Size(40, 40)
@@ -128,11 +132,21 @@ Partial Class Main
         Me.AppIcon.TabStop = False
         Me.AppIcon.Visible = False
         '
+        'lblInfo
+        '
+        Me.lblInfo.ForeColor = System.Drawing.Color.DarkGray
+        Me.lblInfo.Location = New System.Drawing.Point(12, 149)
+        Me.lblInfo.Name = "lblInfo"
+        Me.lblInfo.Size = New System.Drawing.Size(232, 13)
+        Me.lblInfo.TabIndex = 9
+        Me.lblInfo.TextAlign = System.Drawing.ContentAlignment.BottomLeft
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(494, 171)
+        Me.Controls.Add(Me.lblInfo)
         Me.Controls.Add(Me.AppIcon)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
@@ -148,7 +162,7 @@ Partial Class Main
         Me.MinimizeBox = False
         Me.Name = "Main"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Instalador"
+        Me.Text = "EX Installer"
         CType(Me.AppIcon, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -163,4 +177,5 @@ Partial Class Main
     Friend WithEvents Button1 As Button
     Friend WithEvents Button2 As Button
     Friend WithEvents AppIcon As PictureBox
+    Friend WithEvents lblInfo As Label
 End Class

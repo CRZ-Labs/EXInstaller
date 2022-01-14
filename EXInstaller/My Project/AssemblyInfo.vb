@@ -10,11 +10,11 @@ Imports System.Runtime.InteropServices
 
 ' Revisar los valores de los atributos del ensamblado
 
-<Assembly: AssemblyTitle("Instalador Simple")> 
-<Assembly: AssemblyDescription("Instalador de Software")> 
+<Assembly: AssemblyTitle("Instalador Simple")>
+<Assembly: AssemblyDescription("Sistema de deploy simple y bonito")>
 <Assembly: AssemblyCompany("CRZ Labs")> 
-<Assembly: AssemblyProduct("EXInstaller")> 
-<Assembly: AssemblyCopyright("Copyright © 2021 CRZ Labs. Algunos derechos reservados.")> 
+<Assembly: AssemblyProduct("EXInstaller")>
+<Assembly: AssemblyCopyright("Copyright © 2022 CRZ Labs. Algunos derechos reservados.")>
 <Assembly: AssemblyTrademark("CRZ Labs")> 
 
 <Assembly: ComVisible(False)> 
@@ -33,7 +33,7 @@ Imports System.Runtime.InteropServices
 ' mediante el asterisco ('*'), como se muestra a continuación:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.3.0.0")>
-<Assembly: AssemblyFileVersion("24.09.20.21")>
+<Assembly: AssemblyVersion("1.4.0.0")>
+<Assembly: AssemblyFileVersion("14.01.20.21")>
 
 <Assembly: NeutralResourcesLanguageAttribute("es")> 

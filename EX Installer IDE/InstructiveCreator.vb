@@ -4,6 +4,8 @@ Public Class InstructiveCreator
     Dim filePath As String
 
     Private Sub InstructiveCreator_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        cb_Package_InstallerVersion.Items.Add("1.4.0.0")
+        cb_Package_InstallerVersion.Items.Add("1.3.0.0")
         cb_Package_InstallerVersion.Items.Add("1.2.0.0")
         cb_Package_InstallerVersion.Items.Add("1.1.0.0")
         'TabPage2.Enabled = False
@@ -94,8 +96,11 @@ Public Class InstructiveCreator
                 vbCrLf & "InstallFolder=" & tb_Installer_InstallFolder.Text &
                 vbCrLf & "EULA=" & tb_Installer_EULA.Text &
                 vbCrLf & "Installer=" & tb_Installer_Installer.Text &
+                vbCrLf & "AfterInstall=" & tb_Installer_AfterInstall.Text &
+                vbCrLf & "AfterUninstall=" & tb_Installer_AfterUninstall.Text &
                 vbCrLf & "InstallPackage=" & tb_Installer_InstallPackage.Text &
                 vbCrLf & "[HelpLinks]" &
+                vbCrLf & "TelemetryPost=" & tb_HelpLinks_TelemetryPost.Text &
                 vbCrLf & "ChangeLogLink=" & tb_HelpLinks_ChangeLog.Text &
                 vbCrLf & "UseGuide=" & tb_HelpLinks_UseGuide.Text &
                 vbCrLf & "AppAbout=" & tb_HelpLinks_AppAbout.Text &
@@ -155,9 +160,12 @@ Public Class InstructiveCreator
             tb_Installer_InstallFolder.Text = GetIniValue("Installer", "InstallFolder", filePath)
             tb_Installer_EULA.Text = GetIniValue("Installer", "EULA", filePath)
             tb_Installer_Installer.Text = GetIniValue("Installer", "Installer", filePath)
+            tb_Installer_AfterInstall.Text = GetIniValue("Installer", "AfterInstall", filePath)
+            tb_Installer_AfterUninstall.Text = GetIniValue("Installer", "AfterUninstall", filePath)
             tb_Installer_InstallPackage.Text = GetIniValue("Installer", "InstallPackage", filePath)
 
             'HelpLinks
+            tb_HelpLinks_TelemetryPost.Text = GetIniValue("HelpLinks", "TelemetryPost", filePath)
             tb_HelpLinks_ChangeLog.Text = GetIniValue("HelpLinks", "ChangeLogLink", filePath)
             tb_HelpLinks_UseGuide.Text = GetIniValue("HelpLinks", "UseGuide", filePath)
             tb_HelpLinks_AppAbout.Text = GetIniValue("HelpLinks", "AppAbout", filePath)

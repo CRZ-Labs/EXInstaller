@@ -59,5 +59,23 @@ Namespace My.Resources
                 resourceCulture = value
             End Set
         End Property
+        
+        '''<summary>
+        '''  Busca una cadena traducida similar a End-User license agreement for %assemblyname%
+        '''
+        '''Definitions
+        '''&gt; SOFTWARE refers to %assemblyname%
+        '''
+        '''1. Software installation and use
+        '''You may install, use, access, run, or otherwise interact with (&quot;Run&quot;) one copy of the SOFTWARE on a single or multiple computers. The SOFTWARE may be installed, accessed, displayed, run, shared or used concurrently on or from different computers. These rights are applicable for personal and commercial use of the SOFTWARE.
+        '''
+        '''2. No consequential or other damages
+        '''To the maxim [resto de la cadena truncado]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property EULA() As String
+            Get
+                Return ResourceManager.GetString("EULA", resourceCulture)
+            End Get
+        End Property
     End Module
 End Namespace
