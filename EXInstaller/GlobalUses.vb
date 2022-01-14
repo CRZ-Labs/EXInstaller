@@ -18,7 +18,7 @@ Module GlobalUses
     Public IsForced As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
-    Public CanSaveLog As Boolean = False 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.
+    Public CanSaveLog As Boolean = True 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.
     Public x32bits As String
     Public x64x32bits As String
     Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName
@@ -31,7 +31,7 @@ Module GlobalUses
     Public AssemblyName As String '1
     Public AssemblyVersion As String '2
     Public InstructiveURL As String '3
-    Public CanOverwrite As Boolean = True 'Si indicas los 3 valores de arriba, pon este en False. Asi evitas que injecten o pasen parametros
+    Public CanOverwrite As Boolean = True
 #End Region
 
 #Region "Instructive"
