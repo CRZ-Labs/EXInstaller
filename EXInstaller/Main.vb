@@ -6,7 +6,7 @@ Public Class Main
     Dim WithEvents DownloadInstallPackage As New Net.WebClient
     Dim DownloadInstallPackageURI As Uri
 
-    Private Sub Debugger_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub Main_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SetCurrentStatus("Inicializando...")
         'TaskbarProgress.SetState(Me.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
         StartParametros = Command() 'Lee argumentos
@@ -15,7 +15,6 @@ Public Class Main
                 My.Computer.FileSystem.DeleteDirectory(DIRCommons, FileIO.DeleteDirectoryOption.DeleteAllContents)
             End If
             My.Computer.FileSystem.CreateDirectory(DIRCommons)
-            My.Computer.FileSystem.WriteAllText(DIRCommons & "\Install.log", Nothing, False)
             If My.Computer.FileSystem.DirectoryExists(DIRTemp) Then
                 My.Computer.FileSystem.DeleteDirectory(DIRTemp, FileIO.DeleteDirectoryOption.DeleteAllContents)
             End If
@@ -24,6 +23,9 @@ Public Class Main
             AddToLog("[Main_Load(Basics)@Main]Error: ", ex.Message, True)
         End Try
         ReadParameters()
+    End Sub
+    Private Sub Main_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        MsgBox(My.Application.Info.ProductName & " " & My.Application.Info.Version.ToString & " (" & Application.ProductVersion & ") created by " & My.Application.Info.CompanyName & vbCrLf & My.Application.Info.Description & vbCrLf & vbCrLf & vbCrLf & "https://github.com/CRZ-Labs" & vbCrLf & "CRZ Labs no se hace responsable por el mal uso que se le pueda dar a EX Installer.", MsgBoxStyle.Information)
     End Sub
 
     Sub ReadParameters()
@@ -34,7 +36,6 @@ Public Class Main
             For Each arg As String In Argumentos
                 If arg.Contains("/Uninstall") Then
                     IsUninstall = True
-                    UninstallIt(False)
                     parametro = parametro.Replace("/Uninstall", Nothing)
                 ElseIf arg.Contains("-F") Then
                     IsForced = True
@@ -44,7 +45,6 @@ Public Class Main
                     parametro = parametro.Replace("-S", Nothing)
                 ElseIf arg.Contains("/Assistant") Then 'Fue iniciado por el "post-instalador"
                     IsAssistant = True
-                    AssistantMode()
                     parametro = parametro.Replace("/Assistant", Nothing)
                 ElseIf arg.Contains("-Log") Then
                     CanSaveLog = True
@@ -106,7 +106,9 @@ Public Class Main
     End Sub
     Sub CommonStart()
         SetCurrentStatus("Consultando la información del equipo...")
+        'APLICANDO VARIABLES basicas
         lblInfo.Text = AssemblyName & " " & AssemblyVersion
+        InstructiveFilePath = DIRCommons & "\" & AssemblyVersion & "_Instructive.ini"
         Try
             Dim consultaSQLArquitectura As String = "SELECT * FROM Win32_Processor"
             Dim objArquitectura As New ManagementObjectSearcher(consultaSQLArquitectura)
@@ -123,11 +125,16 @@ Public Class Main
     End Sub
     Sub GetInstructive()
         Try
-            SetCurrentStatus("Comenzó la descarga del instructivo..." &
+            If My.Computer.Network.IsAvailable Then
+                SetCurrentStatus("Comenzó la descarga del instructivo..." &
                              vbCrLf & "     " & InstructiveURL)
-            Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
-            DownloadInstructiveURI = New Uri(InstructiveURL)
-            DownloadInstructive.DownloadFileAsync(DownloadInstructiveURI, InstructiveFilePath)
+                Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 5)
+                DownloadInstructiveURI = New Uri(InstructiveURL)
+                DownloadInstructive.DownloadFileAsync(DownloadInstructiveURI, InstructiveFilePath)
+            Else
+                SetCurrentStatus("Sin conexion a internet...")
+                OfflineMode()
+            End If
         Catch ex As Exception
             AddToLog("[GetInstructive@Main]Error: ", ex.Message, True)
             Complementos.Closing()
@@ -163,6 +170,7 @@ Public Class Main
                     ElseIf (result < 0) Then
                         'Nueva version
                         Button1.Text = "Actualizar"
+                        Button1.Enabled = True
                         IsUpdate = True
                     End If
                 End If
@@ -186,42 +194,54 @@ Public Class Main
             lblStatus.Text = "Esperando..."
             ProgressBarStatus.Style = ProgressBarStyle.Marquee
             Text = "Asistente " & Instructive_Package_AssemblyName
-            Button1.Enabled = True
-            Button2.Enabled = True
-            Button1.Visible = True
-            Button2.Visible = True
-            'check updates
-            CheckUpdates()
+            If IsForced = False Then
+                Button1.Enabled = True
+                Button2.Enabled = True
+                Button1.Visible = True
+                Button2.Visible = True
+                'check updates
+                CheckUpdates()
+            Else
+                MsgBox("El modo forzado no permite la administración de la instalación.", MsgBoxStyle.Critical, "Asistente")
+                End
+            End If
         Else
             End
         End If
     End Sub
     Sub UninstallIt(ByVal Now As Boolean)
         SetCurrentStatus("Desinstalar")
-        If IsSilence = False Then
-            IsUninstall = True
-            lblTitle.Text = "Desinstalando..."
-            If GlobalUses.IsComponent = False Then
-                lblSubTitle.Text = "Espere mientras la desinstalación del programa se completa."
-            Else
-                lblSubTitle.Text = "Espere mientras la desinstalación del componente se completa."
-            End If
-            Text = "Desinstalar " & Instructive_Package_AssemblyName
-            If Now Then
-                Dim MSG_Content As String = "¿Want to uninstall the Software called " & Instructive_Package_AssemblyName & "?"
-                If GlobalUses.IsComponent = True Then
-                    MSG_Content = "¿Want to uninstall the Component called " & Instructive_Package_AssemblyName & "?"
+        If IsForced = False Then
+            If IsSilence = False Then
+                IsUninstall = True
+                lblTitle.Text = "Desinstalando..."
+                If GlobalUses.IsComponent = False Then
+                    lblSubTitle.Text = "Espere mientras la desinstalación del programa se completa."
+                Else
+                    lblSubTitle.Text = "Espere mientras la desinstalación del componente se completa."
                 End If
-                If MessageBox.Show(MSG_Content, "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                Text = "Desinstalar " & Instructive_Package_AssemblyName
+                If Now Then
+                    Dim MSG_Content As String = "¿Want to uninstall the Software called " & Instructive_Package_AssemblyName & "?"
+                    If GlobalUses.IsComponent = True Then
+                        MSG_Content = "¿Want to uninstall the Component called " & Instructive_Package_AssemblyName & "?"
+                    End If
+                    If MessageBox.Show(MSG_Content, "Confirm Uninstall", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                        CheckIfRunning()
+                        Uninstall()
+                    Else
+                        AssistantMode()
+                    End If
+                End If
+            Else
+                If Now Then
                     CheckIfRunning()
                     Uninstall()
                 End If
             End If
         Else
-            If Now Then
-                CheckIfRunning()
-                Uninstall()
-            End If
+            MsgBox("El modo forzado no permite la desinstalación.", MsgBoxStyle.Critical, "Asistente")
+            End
         End If
     End Sub
     Sub Reinstall()
@@ -307,7 +327,7 @@ Public Class Main
         End If
     End Sub
 
-    Sub LoadInstructive()
+    Sub LoadInstructive(Optional ByVal Offline As Boolean = False)
         Try
             SetCurrentStatus("Leyendo el instructivo... 1/3")
             Instructive_Package_Status = GetIniValue("Package", "Status", InstructiveFilePath)
@@ -339,15 +359,29 @@ Public Class Main
             Instructive_HelpLinks_UseGuide = GetIniValue("HelpLinks", "UseGuide", InstructiveFilePath)
             Instructive_HelpLinks_AppAbout = GetIniValue("HelpLinks", "AppAbout", InstructiveFilePath)
             Instructive_HelpLinks_Contact = GetIniValue("HelpLinks", "Contact", InstructiveFilePath)
+
+            If Offline = False Then
+                'VERIFICAR QUE LOS DATOS ESTEN CORRECTOS
+                If Instructive_Package_AssemblyName = Nothing Or Instructive_Package_AssemblyVersion = Nothing Or Instructive_Installer_EULA = Nothing Or Instructive_Installer_InstallPackage = Nothing Then
+                    OfflineMode()
+                    Exit Sub
+                End If
+            End If
+
+            'APLICANDO VARIABLES avanzado
+            shObj = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"))
+            DownloadedZipPackage = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
         Catch ex As Exception
             AddToLog("[LoadInstructive@Main]Error: ", ex.Message, True)
             MsgBox("No se logró entender la información dentro del instructivo", MsgBoxStyle.Critical, "Instructivo")
             Complementos.Closing()
         End Try
-        SetCurrentStatus("Esperando...")
-        'DEFINICIONES PARA LA INSTALACION ----------
-        WhereDoIInstall()
-        PreInstall()
+        If Offline = False Then
+            SetCurrentStatus("Esperando...")
+            'DEFINICIONES PARA LA INSTALACION ----------
+            WhereDoIInstall()
+            PreInstall()
+        End If
     End Sub
 
     Sub PreInstall()
@@ -411,7 +445,7 @@ Public Class Main
                             Else
                                 If IsSilence = False Then
                                     Dim EULA_Content As String = My.Resources.EULA
-                                    EULA_Content = EULA_Content.Replace("%assemblyname%", Instructive_Package_AssemblyName)
+                                    EULA_Content = EULA_Content.Replace("%assemblyname%", AssemblyName)
                                     EULA_Content = EULA_Content.Replace("%author%", Instructive_Package_Company)
                                     EULA_Content = EULA_Content.Replace("%weburl%", Instructive_Package_WebUrl)
                                     If MessageBox.Show(EULA_Content &
@@ -476,7 +510,7 @@ Public Class Main
                              vbCrLf & "     " & Instructive_Installer_InstallPackage)
             ProgressBarStatus.Style = ProgressBarStyle.Blocks
             DownloadInstallPackageURI = New Uri(Instructive_Installer_InstallPackage)
-            DownloadInstallPackage.DownloadFileAsync(DownloadInstallPackageURI, DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip")
+            DownloadInstallPackage.DownloadFileAsync(DownloadInstallPackageURI, DownloadedZipPackage)
         Catch ex As Exception
             AddToLog("[InstallIt@Main]Error: ", ex.Message, True)
             MsgBox("No se pudo descargar el instructivo" & vbCrLf & ex.Message, MsgBoxStyle.Critical, "Instructivo")
@@ -529,10 +563,13 @@ Public Class Main
     Sub WhereDoIInstall()
         SetCurrentStatus("Aplicando las variables de instalación...")
         Try
-            x32bits = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
-            x64x32bits = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & Instructive_Package_AssemblyName
+            x32bits = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & AssemblyName 'Usado para 64 en 64 tambien.
+            x64x32bits = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & AssemblyName '32 en un pc 64
+            'Es util saber que WOW6432Node se usa para aplicaciones de 32 bits en equipos de 64.
+            'https://docs.microsoft.com/es-es/troubleshoot/windows-client/application-management/wow6432node-registry-key-present-32-bit-machine
             Dim UbicacionFinal As String
             Dim EsProgramFiles As Boolean = True
+            Instructive_Installer_InstallFolder.Replace(Environment.UserName, "%username%")
             If Instructive_Installer_InstallFolder.Contains("%username%") Then
                 EsProgramFiles = False
                 Instructive_Installer_InstallFolder = Instructive_Installer_InstallFolder.Replace("%username%", Environment.UserName)
@@ -549,22 +586,22 @@ Public Class Main
                 If IsSilence = False Then
                     If Instructive_Package_BitsArch = "64" Then 'Si el PC es de x32 pero el programa es de x64
                         MsgBox("El programa por instalar requiere de un procesador de 64bits y no de 32bits", MsgBoxStyle.Critical, "No se puede instalar")
-                        End
+                        End 'END_PROGRAM
                     End If
                 End If
             ElseIf ArquitecturaSO = "64" Then 'Si el PC es x64
                 If Instructive_Package_BitsArch = "32" Then 'Si el PC es de x64 pero el programa es de x32
                     UbicacionFinal = "C:\Program Files (x86)" & Instructive_Installer_InstallFolder
                     If RegistradorInstalacion Is Nothing Then
-                        Registry.LocalMachine.CreateSubKey(x32bits)
-                    End If
-                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
-                Else 'Si el PC es de x64 y el programa tambien es de x64
-                    UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
-                    If RegistradorInstalacion Is Nothing Then
                         Registry.LocalMachine.CreateSubKey(x64x32bits)
                     End If
                     RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x64x32bits, True)
+                Else 'Si el PC es de x64 y el programa tambien es de x64
+                    UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
+                    If RegistradorInstalacion Is Nothing Then
+                        Registry.LocalMachine.CreateSubKey(x32bits) 'no necesita el nodo. esta variables sirve para un 32 o 64 nativo.
+                    End If
+                    RegistradorInstalacion = Registry.LocalMachine.OpenSubKey(x32bits, True)
                 End If
             Else 'Si nada aplica, se instala donde dios quiera
                 UbicacionFinal = "C:\Program Files" & Instructive_Installer_InstallFolder
@@ -590,6 +627,79 @@ Public Class Main
             End Try
         Catch ex As Exception
             AddToLog("[WhereDoIInstall@Main]Error: ", ex.Message, True)
+        End Try
+    End Sub
+
+    Sub OfflineMode()
+        OfflineRegistry()
+        Try
+            'Verificar si existe la instalacion
+            If RegistradorInstalacion IsNot Nothing Then
+                '   si existe, asistente. SOLO DESINSTALAR
+                AssistantMode()
+                Button1.Enabled = False
+                Exit Sub
+            Else
+                '   si no existe, salir.
+                MsgBox("Instructivo dañado.", MsgBoxStyle.Critical, "Instructivo")
+                End
+            End If
+        Catch ex As Exception
+            AddToLog("[OfflineMode@Main]Error: ", ex.Message, True)
+        End Try
+    End Sub
+    Sub OfflineRegistry()
+        Try
+            'OBTENER EL REGISTRO CORRECTO DE INSTALACION PARA LEER DATOS
+            Dim RegistroVerificador As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & AssemblyName, False)
+            If RegistroVerificador Is Nothing Then
+                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & AssemblyName, True)
+            Else
+                RegistradorInstalacion = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" & AssemblyName, True)
+            End If
+        Catch ex As Exception
+            AddToLog("[OfflineRegistry(0)@Main]Error: ", ex.Message, True)
+        End Try
+        Try
+            Dim Contenido As String = "# EX Installer Instructive File" &
+                vbCrLf & "[Package]" &
+                vbCrLf & "Status=" & RegistradorInstalacion.GetValue("Instructive_Package_Status") &
+                vbCrLf & "AssemblyName=" & RegistradorInstalacion.GetValue("Instructive_Package_AssemblyName") &
+                vbCrLf & "AssemblyVersion=" & RegistradorInstalacion.GetValue("Instructive_Package_AssemblyVersion") &
+                vbCrLf & "Description=" & RegistradorInstalacion.GetValue("Instructive_Package_Description") &
+                vbCrLf & "Company=" & RegistradorInstalacion.GetValue("Instructive_Package_Company") &
+                vbCrLf & "WebUrl=" & RegistradorInstalacion.GetValue("Instructive_Package_WebUrl") &
+                vbCrLf & "PackageName=" & RegistradorInstalacion.GetValue("Instructive_Package_PackageName") &
+                vbCrLf & "IsComponent=" & RegistradorInstalacion.GetValue("Instructive_Package_IsComponent") &
+                vbCrLf & "InstallerVersion=" & RegistradorInstalacion.GetValue("Instructive_Package_InstallerVersion") &
+                vbCrLf & "BitsArch=" & RegistradorInstalacion.GetValue("Instructive_Package_BitsArch") &
+                vbCrLf & "[Installer]" &
+                vbCrLf & "Status=" & RegistradorInstalacion.GetValue("Instructive_Installer_Status") &
+                vbCrLf & "EnableDowngrade=" & RegistradorInstalacion.GetValue("Instructive_Installer_EnableDowngrade") &
+                vbCrLf & "NeedRestart=" & RegistradorInstalacion.GetValue("Instructive_Installer_NeedRestart") &
+                vbCrLf & "NeedStartUp=" & RegistradorInstalacion.GetValue("Instructive_Installer_NeedStartUp") &
+                vbCrLf & "NeedElevateAccess=" & RegistradorInstalacion.GetValue("Instructive_Installer_NeedElevateAccess") &
+                vbCrLf & "NeedToStart=" & RegistradorInstalacion.GetValue("Instructive_Installer_NeedToStart") &
+                vbCrLf & "InstallFolder=" & RegistradorInstalacion.GetValue("Instructive_Installer_InstallFolder") &
+                vbCrLf & "EULA=" & RegistradorInstalacion.GetValue("Instructive_Installer_EULA") &
+                vbCrLf & "Installer=" & RegistradorInstalacion.GetValue("Instructive_Installer_Installer") &
+                vbCrLf & "AfterInstall=" & RegistradorInstalacion.GetValue("Instructive_Installer_AfterInstall") &
+                vbCrLf & "AfterUninstall=" & RegistradorInstalacion.GetValue("Instructive_Installer_AfterUninstall") &
+                vbCrLf & "InstallPackage=" & RegistradorInstalacion.GetValue("Instructive_Installer_InstallPackage") &
+                vbCrLf & "[HelpLinks]" &
+                vbCrLf & "TelemetryPost=" & RegistradorInstalacion.GetValue("Instructive_HelpLinks_TelemetryPost") &
+                vbCrLf & "ChangeLogLink=" & RegistradorInstalacion.GetValue("Instructive_HelpLinks_ChangeLogLink") &
+                vbCrLf & "UseGuide=" & RegistradorInstalacion.GetValue("Instructive_HelpLinks_UseGuide") &
+                vbCrLf & "AppAbout=" & RegistradorInstalacion.GetValue("Instructive_HelpLinks_AppAbout") &
+                vbCrLf & "Contact=" & RegistradorInstalacion.GetValue("Instructive_HelpLinks_Contact")
+            If My.Computer.FileSystem.FileExists(InstructiveFilePath) = True Then
+                My.Computer.FileSystem.DeleteFile(InstructiveFilePath)
+            End If
+            My.Computer.FileSystem.WriteAllText(InstructiveFilePath, Contenido, False)
+            LoadInstructive(True)
+            WhereDoIInstall()
+        Catch ex As Exception
+            AddToLog("[OfflineRegistry(1)@Main]Error: ", ex.Message, True)
         End Try
     End Sub
 

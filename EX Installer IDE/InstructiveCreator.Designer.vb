@@ -307,7 +307,7 @@ Partial Class InstructiveCreator
         Me.tb_Package_Description.Location = New System.Drawing.Point(147, 90)
         Me.tb_Package_Description.Name = "tb_Package_Description"
         Me.tb_Package_Description.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Package_Description.TabIndex = 21
+        Me.tb_Package_Description.TabIndex = 3
         Me.tb_Package_Description.Text = "NULL"
         '
         'lbl_Package_9
@@ -351,7 +351,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_ProcessorArchitecture.Location = New System.Drawing.Point(147, 246)
         Me.cb_Package_ProcessorArchitecture.Name = "cb_Package_ProcessorArchitecture"
         Me.cb_Package_ProcessorArchitecture.Size = New System.Drawing.Size(318, 21)
-        Me.cb_Package_ProcessorArchitecture.TabIndex = 8
+        Me.cb_Package_ProcessorArchitecture.TabIndex = 9
         Me.cb_Package_ProcessorArchitecture.Text = "32"
         '
         'cb_Package_InstallerVersion
@@ -361,7 +361,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_InstallerVersion.Location = New System.Drawing.Point(147, 220)
         Me.cb_Package_InstallerVersion.Name = "cb_Package_InstallerVersion"
         Me.cb_Package_InstallerVersion.Size = New System.Drawing.Size(318, 21)
-        Me.cb_Package_InstallerVersion.TabIndex = 7
+        Me.cb_Package_InstallerVersion.TabIndex = 8
         Me.cb_Package_InstallerVersion.Text = "1.4.0.0"
         '
         'cb_Package_IsComponent
@@ -372,7 +372,7 @@ Partial Class InstructiveCreator
         Me.cb_Package_IsComponent.Location = New System.Drawing.Point(147, 194)
         Me.cb_Package_IsComponent.Name = "cb_Package_IsComponent"
         Me.cb_Package_IsComponent.Size = New System.Drawing.Size(318, 21)
-        Me.cb_Package_IsComponent.TabIndex = 6
+        Me.cb_Package_IsComponent.TabIndex = 7
         Me.cb_Package_IsComponent.Text = "False"
         '
         'lbl_Package_8
@@ -414,7 +414,7 @@ Partial Class InstructiveCreator
         Me.tb_Package_PackageName.Location = New System.Drawing.Point(147, 168)
         Me.tb_Package_PackageName.Name = "tb_Package_PackageName"
         Me.tb_Package_PackageName.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Package_PackageName.TabIndex = 5
+        Me.tb_Package_PackageName.TabIndex = 6
         '
         'lbl_Package_5
         '
@@ -433,7 +433,7 @@ Partial Class InstructiveCreator
         Me.tb_Package_WebUrl.Location = New System.Drawing.Point(147, 142)
         Me.tb_Package_WebUrl.Name = "tb_Package_WebUrl"
         Me.tb_Package_WebUrl.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Package_WebUrl.TabIndex = 4
+        Me.tb_Package_WebUrl.TabIndex = 5
         '
         'lbl_Package_4
         '
@@ -452,7 +452,7 @@ Partial Class InstructiveCreator
         Me.tb_Package_Company.Location = New System.Drawing.Point(147, 116)
         Me.tb_Package_Company.Name = "tb_Package_Company"
         Me.tb_Package_Company.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Package_Company.TabIndex = 3
+        Me.tb_Package_Company.TabIndex = 4
         '
         'lbl_Package_3
         '
@@ -573,7 +573,7 @@ Partial Class InstructiveCreator
         Me.tb_Installer_AfterUninstall.Location = New System.Drawing.Point(147, 278)
         Me.tb_Installer_AfterUninstall.Name = "tb_Installer_AfterUninstall"
         Me.tb_Installer_AfterUninstall.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Installer_AfterUninstall.TabIndex = 23
+        Me.tb_Installer_AfterUninstall.TabIndex = 10
         Me.tb_Installer_AfterUninstall.Text = "NULL"
         '
         'lbl_Installer_11
@@ -593,7 +593,7 @@ Partial Class InstructiveCreator
         Me.tb_Installer_AfterInstall.Location = New System.Drawing.Point(147, 252)
         Me.tb_Installer_AfterInstall.Name = "tb_Installer_AfterInstall"
         Me.tb_Installer_AfterInstall.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Installer_AfterInstall.TabIndex = 21
+        Me.tb_Installer_AfterInstall.TabIndex = 9
         Me.tb_Installer_AfterInstall.Text = "NULL"
         '
         'lbl_Installer_10
@@ -655,7 +655,7 @@ Partial Class InstructiveCreator
         Me.tb_Installer_InstallPackage.Location = New System.Drawing.Point(147, 304)
         Me.tb_Installer_InstallPackage.Name = "tb_Installer_InstallPackage"
         Me.tb_Installer_InstallPackage.Size = New System.Drawing.Size(318, 20)
-        Me.tb_Installer_InstallPackage.TabIndex = 9
+        Me.tb_Installer_InstallPackage.TabIndex = 11
         '
         'lbl_Installer_12
         '
@@ -851,7 +851,7 @@ Partial Class InstructiveCreator
         Me.tb_HelpLinks_TelemetryPost.Location = New System.Drawing.Point(147, 74)
         Me.tb_HelpLinks_TelemetryPost.Name = "tb_HelpLinks_TelemetryPost"
         Me.tb_HelpLinks_TelemetryPost.Size = New System.Drawing.Size(318, 20)
-        Me.tb_HelpLinks_TelemetryPost.TabIndex = 29
+        Me.tb_HelpLinks_TelemetryPost.TabIndex = 0
         Me.tb_HelpLinks_TelemetryPost.Text = "NULL"
         '
         'lbl_HelpLinks_0
@@ -871,7 +871,7 @@ Partial Class InstructiveCreator
         Me.tb_HelpLinks_Contact.Location = New System.Drawing.Point(147, 178)
         Me.tb_HelpLinks_Contact.Name = "tb_HelpLinks_Contact"
         Me.tb_HelpLinks_Contact.Size = New System.Drawing.Size(318, 20)
-        Me.tb_HelpLinks_Contact.TabIndex = 3
+        Me.tb_HelpLinks_Contact.TabIndex = 4
         '
         'lbl_HelpLinks_4
         '
@@ -891,7 +891,7 @@ Partial Class InstructiveCreator
         Me.tb_HelpLinks_AppAbout.Location = New System.Drawing.Point(147, 152)
         Me.tb_HelpLinks_AppAbout.Name = "tb_HelpLinks_AppAbout"
         Me.tb_HelpLinks_AppAbout.Size = New System.Drawing.Size(318, 20)
-        Me.tb_HelpLinks_AppAbout.TabIndex = 2
+        Me.tb_HelpLinks_AppAbout.TabIndex = 3
         '
         'lbl_HelpLinks_3
         '
@@ -910,7 +910,7 @@ Partial Class InstructiveCreator
         Me.tb_HelpLinks_UseGuide.Location = New System.Drawing.Point(147, 126)
         Me.tb_HelpLinks_UseGuide.Name = "tb_HelpLinks_UseGuide"
         Me.tb_HelpLinks_UseGuide.Size = New System.Drawing.Size(318, 20)
-        Me.tb_HelpLinks_UseGuide.TabIndex = 1
+        Me.tb_HelpLinks_UseGuide.TabIndex = 2
         '
         'lbl_HelpLinks_2
         '
@@ -929,7 +929,7 @@ Partial Class InstructiveCreator
         Me.tb_HelpLinks_ChangeLog.Location = New System.Drawing.Point(147, 100)
         Me.tb_HelpLinks_ChangeLog.Name = "tb_HelpLinks_ChangeLog"
         Me.tb_HelpLinks_ChangeLog.Size = New System.Drawing.Size(318, 20)
-        Me.tb_HelpLinks_ChangeLog.TabIndex = 0
+        Me.tb_HelpLinks_ChangeLog.TabIndex = 1
         '
         'lbl_HelpLinks_1
         '
@@ -1020,7 +1020,7 @@ Partial Class InstructiveCreator
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.ReadOnly = True
         Me.TextBox3.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox3.TabIndex = 2
+        Me.TextBox3.TabIndex = 3
         Me.TextBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Button1
@@ -1031,7 +1031,7 @@ Partial Class InstructiveCreator
         Me.Button1.Location = New System.Drawing.Point(225, 161)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(105, 29)
-        Me.Button1.TabIndex = 23
+        Me.Button1.TabIndex = 0
         Me.Button1.Text = "Injectar"
         Me.Button1.UseVisualStyleBackColor = True
         '
@@ -1081,7 +1081,7 @@ Partial Class InstructiveCreator
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.ReadOnly = True
         Me.TextBox2.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox2.TabIndex = 1
+        Me.TextBox2.TabIndex = 2
         Me.TextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'TextBox1
@@ -1091,7 +1091,7 @@ Partial Class InstructiveCreator
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.ReadOnly = True
         Me.TextBox1.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox1.TabIndex = 0
+        Me.TextBox1.TabIndex = 1
         Me.TextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label2
@@ -1133,7 +1133,7 @@ Partial Class InstructiveCreator
         Me.btnNext.Location = New System.Drawing.Point(690, 474)
         Me.btnNext.Name = "btnNext"
         Me.btnNext.Size = New System.Drawing.Size(122, 25)
-        Me.btnNext.TabIndex = 6
+        Me.btnNext.TabIndex = 0
         Me.btnNext.Text = "Siguiente >"
         Me.ToolTips.SetToolTip(Me.btnNext, "Avanza entre los distintas pestañas." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Necesario para poder crear el instructivo.")
         Me.btnNext.UseVisualStyleBackColor = True
@@ -1145,7 +1145,7 @@ Partial Class InstructiveCreator
         Me.btnBack.Location = New System.Drawing.Point(12, 474)
         Me.btnBack.Name = "btnBack"
         Me.btnBack.Size = New System.Drawing.Size(122, 25)
-        Me.btnBack.TabIndex = 15
+        Me.btnBack.TabIndex = 0
         Me.btnBack.Text = "< Volver"
         Me.btnBack.UseVisualStyleBackColor = True
         Me.btnBack.Visible = False
@@ -1157,7 +1157,7 @@ Partial Class InstructiveCreator
         Me.btnCreate.Location = New System.Drawing.Point(304, 474)
         Me.btnCreate.Name = "btnCreate"
         Me.btnCreate.Size = New System.Drawing.Size(217, 25)
-        Me.btnCreate.TabIndex = 3
+        Me.btnCreate.TabIndex = 0
         Me.btnCreate.Text = "Crear"
         Me.ToolTips.SetToolTip(Me.btnCreate, "Crea el instructivo")
         Me.btnCreate.UseVisualStyleBackColor = True

@@ -71,7 +71,7 @@ Partial Class Main
         Me.TextBox1.Location = New System.Drawing.Point(25, 89)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox1.TabIndex = 8
+        Me.TextBox1.TabIndex = 1
         Me.TextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'TextBox2
@@ -79,7 +79,7 @@ Partial Class Main
         Me.TextBox2.Location = New System.Drawing.Point(175, 89)
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox2.TabIndex = 10
+        Me.TextBox2.TabIndex = 2
         Me.TextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label2
@@ -96,7 +96,7 @@ Partial Class Main
         Me.TextBox3.Location = New System.Drawing.Point(325, 89)
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(144, 20)
-        Me.TextBox3.TabIndex = 12
+        Me.TextBox3.TabIndex = 3
         Me.TextBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label3
@@ -114,7 +114,7 @@ Partial Class Main
         Me.Button1.Location = New System.Drawing.Point(195, 126)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(105, 29)
-        Me.Button1.TabIndex = 13
+        Me.Button1.TabIndex = 0
         Me.Button1.Text = "Injectar"
         Me.Button1.UseVisualStyleBackColor = True
         '
@@ -125,7 +125,7 @@ Partial Class Main
         Me.Label4.Location = New System.Drawing.Point(437, 112)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(32, 13)
-        Me.Label4.TabIndex = 14
+        Me.Label4.TabIndex = 4
         Me.Label4.Text = "Crear"
         '
         'Main

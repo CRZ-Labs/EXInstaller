@@ -84,12 +84,13 @@ Partial Class Main
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblSubTitle.Location = New System.Drawing.Point(20, 35)
         Me.lblSubTitle.Name = "lblSubTitle"
-        Me.lblSubTitle.Size = New System.Drawing.Size(454, 72)
+        Me.lblSubTitle.Size = New System.Drawing.Size(454, 29)
         Me.lblSubTitle.TabIndex = 4
         Me.lblSubTitle.Text = "Por favor espere..."
         '
         'lblStatusStatus
         '
+        Me.lblStatusStatus.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblStatusStatus.Location = New System.Drawing.Point(250, 149)
         Me.lblStatusStatus.Name = "lblStatusStatus"
         Me.lblStatusStatus.Size = New System.Drawing.Size(232, 13)
@@ -98,30 +99,33 @@ Partial Class Main
         '
         'Button1
         '
+        Me.Button1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button1.Enabled = False
         Me.Button1.Location = New System.Drawing.Point(135, 67)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(109, 27)
-        Me.Button1.TabIndex = 6
+        Me.Button1.TabIndex = 0
         Me.Button1.Text = "Reinstalar"
         Me.Button1.UseVisualStyleBackColor = True
         Me.Button1.Visible = False
         '
         'Button2
         '
+        Me.Button2.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.Button2.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button2.Enabled = False
         Me.Button2.Location = New System.Drawing.Point(250, 67)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(109, 27)
-        Me.Button2.TabIndex = 7
+        Me.Button2.TabIndex = 1
         Me.Button2.Text = "Desinstalar"
         Me.Button2.UseVisualStyleBackColor = True
         Me.Button2.Visible = False
         '
         'AppIcon
         '
+        Me.AppIcon.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.AppIcon.Cursor = System.Windows.Forms.Cursors.Hand
         Me.AppIcon.Location = New System.Drawing.Point(442, 12)
@@ -134,6 +138,7 @@ Partial Class Main
         '
         'lblInfo
         '
+        Me.lblInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblInfo.ForeColor = System.Drawing.Color.DarkGray
         Me.lblInfo.Location = New System.Drawing.Point(12, 149)
         Me.lblInfo.Name = "lblInfo"

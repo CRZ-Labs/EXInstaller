@@ -12,8 +12,8 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("Instalador Simple")>
 <Assembly: AssemblyDescription("Sistema de deploy simple y bonito")>
-<Assembly: AssemblyCompany("CRZ Labs")> 
-<Assembly: AssemblyProduct("EXInstaller")>
+<Assembly: AssemblyCompany("CRZ Labs")>
+<Assembly: AssemblyProduct("EX Installer")>
 <Assembly: AssemblyCopyright("Copyright © 2022 CRZ Labs. Algunos derechos reservados.")>
 <Assembly: AssemblyTrademark("CRZ Labs")> 
 

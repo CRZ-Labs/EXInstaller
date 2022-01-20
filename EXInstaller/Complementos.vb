@@ -8,14 +8,14 @@ Module Instalador
 
 #Region "Installer"
     Sub Install() 'Instalamos el paquete descargado indicado por el instructivo
-        shObj = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"))
         Main.SetCurrentStatus("Comparando los datos del equipo...")
         Dim StartBlinkForFocus = WindowsApi.FlashWindow(Process.GetCurrentProcess().MainWindowHandle, True, True, 3)
         TaskbarProgress.SetState(Main.Handle, TaskbarProgress.TaskbarStates.Indeterminate)
-        DownloadedZipPackage = DIRTemp & "\" & AssemblyName & "_" & Instructive_Package_AssemblyVersion & ".zip"
         Try
             Main.SetCurrentStatus("Creando los directorios para la instalación...")
-            If Instructive_Package_IsComponent = False Then 'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
+            'VER SI SE ESTA EJECUTANDO ----------
+            CheckIfRunning()
+            If Instructive_Package_IsComponent = False Then'Si es componente, no se creara ni eliminara el directorio de instalacion, deberia existir previamente
                 If My.Computer.FileSystem.DirectoryExists(DIRTemp & "\" & Instructive_Package_AssemblyName) = True Then
                     My.Computer.FileSystem.DeleteDirectory(DIRTemp & "\" & Instructive_Package_AssemblyName, FileIO.DeleteDirectoryOption.DeleteAllContents)
                 End If
@@ -24,8 +24,6 @@ Module Instalador
                 End If
                 My.Computer.FileSystem.CreateDirectory(DIRTemp & "\" & Instructive_Package_AssemblyName)
             End If
-            'VER SI EL EJECUTABLE SE ESTA EJECUTANDO ----------
-            CheckIfRunning()
             'INSTALACION (COPIADO) DE FICHEROS EN ZIP A UBICACION FINAL DE INSTALACION ----------
             Main.SetCurrentStatus("Copiando los datos...")
             ZipFile.ExtractToDirectory(DownloadedZipPackage, DIRTemp & "\" & Instructive_Package_AssemblyName)
@@ -71,7 +69,7 @@ Module Instalador
                     Shortcut.IconLocation = ExePackage & ",0"
                     Shortcut.TargetPath = ExePackage
                     Shortcut.WindowStyle = 1
-                    Shortcut.Description = "Run " & Instructive_Package_AssemblyName
+                    Shortcut.Description = Instructive_Package_Description
                     Shortcut.Save()
                 Catch ex As Exception
                     AddToLog("[Install(CreateShorcoutAndWindowsFolder)@Complementos]Error: ", ex.Message, True)
@@ -88,7 +86,7 @@ Module Instalador
                     Shortcut.TargetPath = ExePackage
                     'Shortcut.Arguments = "Debugger.DIRInstallFolder & "\" & Debugger.AssemblyName & ".exe""
                     Shortcut.WindowStyle = 1
-                    Shortcut.Description = "Start " & Instructive_Package_AssemblyName
+                    Shortcut.Description = Instructive_Package_Description
                     Shortcut.Save()
                 Catch ex As Exception
                     AddToLog("[Install(CreateShorcoutDesktop)@Complementos]Error: ", ex.Message, True)
@@ -105,7 +103,7 @@ Module Instalador
                     FileGet(1, stub)
                     FileClose(1)
                     FileOpen(1, Temp, OpenMode.Binary, OpenAccess.ReadWrite, OpenShare.Default)
-                    FilePut(1, stub & FS1 & Instructive_Package_AssemblyName & FS1 & Instructive_Package_AssemblyVersion & FS1 & InstructiveURL & FS1)
+                    FilePut(1, stub & FS1 & AssemblyName & FS1 & Instructive_Package_AssemblyVersion & FS1 & InstructiveURL & FS1)
                     FileClose(1)
                 Catch ex As Exception
                     AddToLog("[CreateAndStubTheUninstaller@Complementos]Error: ", ex.Message, True)
@@ -151,6 +149,38 @@ Module Instalador
             Catch ex As Exception
                 AddToLog("[CreateInstallRegistry@Complementos]Error: ", ex.Message, True)
             End Try
+            Try
+                'CREACION DEL REGISTRO DE INSTRUCTIVO ----------
+                RegistradorInstalacion.SetValue("Instructive_Package_Status", Instructive_Package_Status, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_AssemblyName", Instructive_Package_AssemblyName, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_AssemblyVersion", Instructive_Package_AssemblyVersion, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_Description", Instructive_Package_Description, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_Company", Instructive_Package_Company, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_WebUrl", Instructive_Package_WebUrl, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_PackageName", Instructive_Package_PackageName, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_IsComponent", Instructive_Package_IsComponent, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_InstallerVersion", Instructive_Package_InstallerVersion, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Package_BitsArch", Instructive_Package_BitsArch, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_Status", Instructive_Installer_Status, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_EnableDowngrade", Instructive_Installer_EnableDowngrade, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_NeedRestart", Instructive_Installer_NeedRestart, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_NeedStartUp", Instructive_Installer_NeedStartUp, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_NeedElevateAccess", Instructive_Installer_NeedElevateAccess, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_NeedToStart", Instructive_Installer_NeedToStart, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_InstallFolder", Instructive_Installer_InstallFolder.Replace(Environment.UserName, "%username%"), RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_EULA", Instructive_Installer_EULA, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_Installer", Instructive_Installer_Installer, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_AfterInstall", Instructive_Installer_AfterInstall, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_AfterUninstall", Instructive_Installer_AfterUninstall, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_Installer_InstallPackage", Instructive_Installer_InstallPackage, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_HelpLinks_TelemetryPost", Instructive_HelpLinks_TelemetryPost, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_HelpLinks_ChangeLogLink", Instructive_HelpLinks_ChangeLogLink, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_HelpLinks_UseGuide", Instructive_HelpLinks_UseGuide, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_HelpLinks_AppAbout", Instructive_HelpLinks_AppAbout, RegistryValueKind.String)
+                RegistradorInstalacion.SetValue("Instructive_HelpLinks_Contact", Instructive_HelpLinks_Contact, RegistryValueKind.String)
+            Catch ex As Exception
+                AddToLog("[CreateInstructiveRegistry@Complementos]Error: ", ex.Message, True)
+            End Try
         End If
         Try
             'VERIFICACION DE SI EL PROGRAMA NECESITA PERMISOS DE ADMINISTRADOR ----------
@@ -171,12 +201,12 @@ Module Instalador
                     End If
                     Dim Args() As String = Instructive_Installer_NeedStartUp.Split(";")
                     If Args(1) = "NULL" Then
-                        REGISTRADOR.SetValue(Instructive_Package_AssemblyName, """" & ExePackage & """", RegistryValueKind.ExpandString)
+                        REGISTRADOR.SetValue(AssemblyName, """" & ExePackage & """", RegistryValueKind.ExpandString)
                     Else
-                        REGISTRADOR.SetValue(Instructive_Package_AssemblyName, """" & ExePackage & """" & " " & Args(1), RegistryValueKind.ExpandString)
+                        REGISTRADOR.SetValue(AssemblyName, """" & ExePackage & """" & " " & Args(1), RegistryValueKind.ExpandString)
                     End If
                 Else
-                    REGISTRADOR.SetValue(Instructive_Package_AssemblyName, ExePackage, RegistryValueKind.ExpandString)
+                    REGISTRADOR.SetValue(AssemblyName, ExePackage, RegistryValueKind.ExpandString)
                 End If
             End If
         Catch ex As Exception
@@ -288,9 +318,9 @@ Module Instalador
                 regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
             ElseIf ArquitecturaSO = "64" Then
                 If Instructive_Package_BitsArch = "32" Then
-                    regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
-                Else
                     regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
+                Else
+                    regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
                 End If
             Else
                 regKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", True)
@@ -435,7 +465,7 @@ Module Complementos
         End Try
     End Sub
 
-    Sub Closing()
+    Sub Closing(Optional ByVal FORCE As Boolean = False)
         Try
             If My.Computer.FileSystem.DirectoryExists(DIRTemp) = True Then
                 My.Computer.FileSystem.DeleteDirectory(DIRTemp, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -446,56 +476,60 @@ Module Complementos
         Catch ex As Exception
             AddToLog("[Closing(DeletingTempFiles)@Complementos]Error: ", ex.Message, True)
         End Try
-        Try
-            AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & "#Registro de variables" &
-                 vbCrLf & "DIRoot=" & DIRoot &
-                 vbCrLf & "DIRCommons=" & DIRCommons &
-                 vbCrLf & "DIRTemp=" & DIRTemp &
-                 vbCrLf & "InstructiveFilePath=" & InstructiveFilePath &
-                 vbCrLf & "StartParametros=" & StartParametros &
-                 vbCrLf & "IsUninstall=" & IsUninstall &
-                 vbCrLf & "IsReinstall=" & IsReinstall &
-                 vbCrLf & "IsAssistant=" & IsAssistant &
-                 vbCrLf & "InstallerPathBuilder=" & InstallerPathBuilder &
-                 vbCrLf & "RegistradorInstalacion=" & RegistradorInstalacion.Name &
-                 vbCrLf & "CanSaveLog=" & CanSaveLog &
-                 vbCrLf & "x32bits=" & x32bits &
-                 vbCrLf & "x64x32bits=" & x64x32bits &
-                 vbCrLf & "ExePackage=" & ExePackage &
-                 vbCrLf & "ArquitecturaSO=" & ArquitecturaSO &
-                 vbCrLf & "PackageSize=" & PackageSize &
-                 vbCrLf & "AssemblyName=" & AssemblyName &
-                 vbCrLf & "AssemblyVersion=" & AssemblyVersion &
-                 vbCrLf & "InstructiveURL=" & InstructiveURL &
-                 vbCrLf & "CanOverwrite=" & CanOverwrite &
-                 vbCrLf & "ExecutablePath=" & Application.ExecutablePath &
-                 vbCrLf &
-                 vbCrLf & "Instructive_Package_Status=" & Instructive_Package_Status &
-                 vbCrLf & "Instructive_Package_AssemblyName=" & Instructive_Package_AssemblyName &
-                 vbCrLf & "Instructive_Package_AssemblyVersion=" & Instructive_Package_AssemblyVersion &
-                 vbCrLf & "Instructive_Package_Company=" & Instructive_Package_Company &
-                 vbCrLf & "Instructive_Package_WebUrl=" & Instructive_Package_WebUrl &
-                 vbCrLf & "Instructive_Package_PackageName=" & Instructive_Package_PackageName &
-                 vbCrLf & "Instructive_Package_IsComponent=" & Instructive_Package_IsComponent &
-                 vbCrLf & "Instructive_Package_InstallerVersion=" & Instructive_Package_InstallerVersion &
-                 vbCrLf & "Instructive_Package_BitsArch=" & Instructive_Package_BitsArch &
-                 vbCrLf & "Instructive_Installer_Status=" & Instructive_Installer_Status &
-                 vbCrLf & "Instructive_Installer_EnableDowngrade=" & Instructive_Installer_EnableDowngrade &
-                 vbCrLf & "Instructive_Installer_NeedRestart=" & Instructive_Installer_NeedRestart &
-                 vbCrLf & "Instructive_Installer_NeedStartUp=" & Instructive_Installer_NeedStartUp &
-                 vbCrLf & "Instructive_Installer_NeedElevateAccess=" & Instructive_Installer_NeedElevateAccess &
-                 vbCrLf & "Instructive_Installer_InstallFolder=" & Instructive_Installer_InstallFolder &
-                 vbCrLf & "Instructive_Installer_EULA=" & Instructive_Installer_EULA &
-                 vbCrLf & "Instructive_Installer_Installer=" & Instructive_Installer_Installer &
-                 vbCrLf & "Instructive_Installer_InstallPackage=" & Instructive_Installer_InstallPackage &
-                 vbCrLf & "Instructive_HelpLinks_ChangeLogLink=" & Instructive_HelpLinks_ChangeLogLink &
-                 vbCrLf & "Instructive_HelpLinks_UseGuide=" & Instructive_HelpLinks_UseGuide &
-                 vbCrLf & "Instructive_HelpLinks_AppAbout=" & Instructive_HelpLinks_AppAbout &
-                 vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
-                 vbCrLf & vbCrLf & vbCrLf)
-            Main.Close()
-        Catch ex As Exception
-        End Try
+        If FORCE Then
+            End
+        Else
+            Try
+                AddToLog(vbCrLf & "Informe antes de cerrar", vbCrLf & "#Registro de variables" &
+                     vbCrLf & "DIRoot=" & DIRoot &
+                     vbCrLf & "DIRCommons=" & DIRCommons &
+                     vbCrLf & "DIRTemp=" & DIRTemp &
+                     vbCrLf & "InstructiveFilePath=" & InstructiveFilePath &
+                     vbCrLf & "StartParametros=" & StartParametros &
+                     vbCrLf & "IsUninstall=" & IsUninstall &
+                     vbCrLf & "IsReinstall=" & IsReinstall &
+                     vbCrLf & "IsAssistant=" & IsAssistant &
+                     vbCrLf & "InstallerPathBuilder=" & InstallerPathBuilder &
+                     vbCrLf & "RegistradorInstalacion=" & RegistradorInstalacion.Name &
+                     vbCrLf & "CanSaveLog=" & CanSaveLog &
+                     vbCrLf & "x32bits=" & x32bits &
+                     vbCrLf & "x64x32bits=" & x64x32bits &
+                     vbCrLf & "ExePackage=" & ExePackage &
+                     vbCrLf & "ArquitecturaSO=" & ArquitecturaSO &
+                     vbCrLf & "PackageSize=" & PackageSize &
+                     vbCrLf & "AssemblyName=" & AssemblyName &
+                     vbCrLf & "AssemblyVersion=" & AssemblyVersion &
+                     vbCrLf & "InstructiveURL=" & InstructiveURL &
+                     vbCrLf & "CanOverwrite=" & CanOverwrite &
+                     vbCrLf & "ExecutablePath=" & Application.ExecutablePath &
+                     vbCrLf &
+                     vbCrLf & "Instructive_Package_Status=" & Instructive_Package_Status &
+                     vbCrLf & "Instructive_Package_AssemblyName=" & Instructive_Package_AssemblyName &
+                     vbCrLf & "Instructive_Package_AssemblyVersion=" & Instructive_Package_AssemblyVersion &
+                     vbCrLf & "Instructive_Package_Company=" & Instructive_Package_Company &
+                     vbCrLf & "Instructive_Package_WebUrl=" & Instructive_Package_WebUrl &
+                     vbCrLf & "Instructive_Package_PackageName=" & Instructive_Package_PackageName &
+                     vbCrLf & "Instructive_Package_IsComponent=" & Instructive_Package_IsComponent &
+                     vbCrLf & "Instructive_Package_InstallerVersion=" & Instructive_Package_InstallerVersion &
+                     vbCrLf & "Instructive_Package_BitsArch=" & Instructive_Package_BitsArch &
+                     vbCrLf & "Instructive_Installer_Status=" & Instructive_Installer_Status &
+                     vbCrLf & "Instructive_Installer_EnableDowngrade=" & Instructive_Installer_EnableDowngrade &
+                     vbCrLf & "Instructive_Installer_NeedRestart=" & Instructive_Installer_NeedRestart &
+                     vbCrLf & "Instructive_Installer_NeedStartUp=" & Instructive_Installer_NeedStartUp &
+                     vbCrLf & "Instructive_Installer_NeedElevateAccess=" & Instructive_Installer_NeedElevateAccess &
+                     vbCrLf & "Instructive_Installer_InstallFolder=" & Instructive_Installer_InstallFolder &
+                     vbCrLf & "Instructive_Installer_EULA=" & Instructive_Installer_EULA &
+                     vbCrLf & "Instructive_Installer_Installer=" & Instructive_Installer_Installer &
+                     vbCrLf & "Instructive_Installer_InstallPackage=" & Instructive_Installer_InstallPackage &
+                     vbCrLf & "Instructive_HelpLinks_ChangeLogLink=" & Instructive_HelpLinks_ChangeLogLink &
+                     vbCrLf & "Instructive_HelpLinks_UseGuide=" & Instructive_HelpLinks_UseGuide &
+                     vbCrLf & "Instructive_HelpLinks_AppAbout=" & Instructive_HelpLinks_AppAbout &
+                     vbCrLf & "Instructive_HelpLinks_Contact=" & Instructive_HelpLinks_Contact &
+                     vbCrLf & vbCrLf & vbCrLf)
+                Main.Close()
+            Catch ex As Exception
+            End Try
+        End If
     End Sub
 
     Dim DoubleBytes As Double

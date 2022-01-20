@@ -7,7 +7,7 @@ Module GlobalUses
     Public DIRoot As String = "C:\Users\" & Environment.UserName & "\AppData\Local"
     Public DIRCommons As String = DIRoot & "\" & My.Application.Info.AssemblyName
     Public DIRTemp As String = DIRoot & "\Temp\" & My.Application.Info.AssemblyName
-    Public InstructiveFilePath As String = DIRCommons & "\Instructive.ini"
+    Public InstructiveFilePath As String = DIRCommons & "\" & AssemblyVersion & "_Instructive.ini"
     Public StartParametros As String
     Public IsInjected As Boolean = True
     Public IsUninstall As Boolean = False
@@ -19,7 +19,7 @@ Module GlobalUses
     Public IsForced As Boolean = False
     Public InstallerPathBuilder As String
     Public RegistradorInstalacion As RegistryKey
-    Public CanSaveLog As Boolean = True 'True solo para el desarrollo (Arg("-Log")). El log se guarda en DIRTemp. Recomendado dejar en False.
+    Public CanSaveLog As Boolean = True 'Para guardar el log del instalador
     Public x32bits As String
     Public x64x32bits As String
     Public ExePackage As String = InstallerPathBuilder & "\" & Instructive_Package_PackageName
